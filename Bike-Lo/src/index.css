@@ -2,24 +2,24 @@
 
 :root {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.1450 0 0);
+  --foreground: #000000;
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1450 0 0);
+  --card-foreground: #000000;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1450 0 0);
-  --primary: oklch(0.2050 0 0);
-  --primary-foreground: oklch(0.9850 0 0);
+  --popover-foreground: #000000;
+  --primary: #DC2626;
+  --primary-foreground: #FFFFFF;
   --secondary: oklch(0.9700 0 0);
-  --secondary-foreground: oklch(0.2050 0 0);
+  --secondary-foreground: #DC2626;
   --muted: oklch(0.9700 0 0);
-  --muted-foreground: oklch(0.5560 0 0);
+  --muted-foreground: #DC2626;
   --accent: oklch(0.9700 0 0);
-  --accent-foreground: oklch(0.2050 0 0);
-  --destructive: oklch(0.5770 0.2450 27.3250);
-  --destructive-foreground: oklch(1 0 0);
+  --accent-foreground: #DC2626;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
   --border: oklch(0.9220 0 0);
   --input: oklch(0.9220 0 0);
-  --ring: oklch(0.7080 0 0);
+  --ring: #DC2626;
   --chart-1: oklch(0.8100 0.1000 252);
   --chart-2: oklch(0.6200 0.1900 260);
   --chart-3: oklch(0.5500 0.2200 263);
@@ -166,9 +166,18 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: var(--background);
-  color: var(--foreground);
+  color: #000000;
   font-family: var(--font-sans);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Default text color to black, links to red */
+body, p, span, div, h1, h2, h3, h4, h5, h6 {
+  color: #000000;
+}
+
+a:not([class*="text-"]) {
+  color: #DC2626;
 }
 
 /* Smooth transitions for theme changes */

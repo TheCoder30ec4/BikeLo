@@ -1,9 +1,21 @@
+import Hero from "@/components/Hero";
+import BrandMarquee from "@/components/BrandMarquee";
+import PremiumServices from "@/components/PremiumServices";
+import PopularBikes from "@/components/PopularBikes";
+import BrowseByStyle from "@/components/BrowseByStyle";
+import BuySellSection from "@/components/BuySellSection";
+
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Bike-Lo</h1>
-      <p className="text-muted-foreground">Your one-stop shop for all bike needs.</p>
-    </div>
+    <>
+      <Hero />
+      <BrandMarquee />
+      <PremiumServices />
+      <PopularBikes />
+      <BrowseByStyle />
+      <BuySellSection />
+    </>
   );
 }
+
 
