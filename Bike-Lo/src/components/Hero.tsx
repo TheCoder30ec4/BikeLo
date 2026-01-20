@@ -98,34 +98,37 @@ export default function Hero() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <span className="hero-highlight">Delivered</span> to Your
+                  <span className="hero-highlight">Deliver</span> to
                 </motion.span>
-                {/* Animated Rotating Text */}
+                {/* Animated Rotating Text with "Your" prefix */}
                 <span 
-                  className="relative flex w-full justify-center lg:justify-start overflow-hidden h-[1.2em] md:h-[1.15em]"
+                  className="relative flex w-full justify-center lg:justify-start items-center overflow-hidden h-[1.2em] md:h-[1.15em]"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                 >
-                  {titles.map((title, index) => (
-                    <motion.span
-                      key={index}
-                      className="absolute text-[#f7931e]"
-                      initial={{ opacity: 0, y: 100 }}
-                      transition={{ type: "spring", stiffness: 50, damping: 20 }}
-                      animate={
-                        titleNumber === index
-                          ? {
-                              y: 0,
-                              opacity: 1,
-                            }
-                          : {
-                              y: titleNumber > index ? -100 : 100,
-                              opacity: 0,
-                            }
-                      }
-                    >
-                      {title}
-                    </motion.span>
-                  ))}
+                  <span className="text-black dark:text-white mr-2">Your</span>
+                  <span className="relative flex-1 overflow-hidden h-full">
+                    {titles.map((title, index) => (
+                      <motion.span
+                        key={index}
+                        className="absolute text-[#f7931e]"
+                        initial={{ opacity: 0, y: 100 }}
+                        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+                        animate={
+                          titleNumber === index
+                            ? {
+                                y: 0,
+                                opacity: 1,
+                              }
+                            : {
+                                y: titleNumber > index ? -100 : 100,
+                                opacity: 0,
+                              }
+                        }
+                      >
+                        {title}
+                      </motion.span>
+                    ))}
+                  </span>
                 </span>
               </h1>
             </div>
@@ -211,7 +214,7 @@ export default function Hero() {
                 </div>
                 <div className="text-sm sm:text-base">
                   <span className="font-bold text-black dark:text-white">5.0</span>
-                  <span className="text-gray-600 dark:text-gray-400 ml-1">500k Customer Reviews</span>
+                  <span className="text-gray-600 dark:text-gray-400 ml-1">500k+ Customer Reviews</span>
                 </div>
               </div>
             </motion.div>

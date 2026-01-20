@@ -42,7 +42,6 @@ export default function Navbar() {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/bikes", label: "Bikes" },
     { to: "/buy", label: "Buy" },
     { to: "/sell", label: "Sell" },
     { to: "/service", label: "Service" },

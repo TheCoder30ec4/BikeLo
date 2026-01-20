@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/hooks/use-theme";
 
 interface Bike {
   id: number;
@@ -36,6 +37,7 @@ const popularBikes: Bike[] = [
 
 export default function PopularBikes() {
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const { resolvedTheme } = useTheme();
 
   const toggleWishlist = (id: number) => {
     setWishlist((prev) =>
@@ -48,7 +50,7 @@ export default function PopularBikes() {
       <div className="container mx-auto max-w-6xl">
         {/* Section Title */}
         <h2
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black text-center mb-8 lg:mb-10"
+          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white text-center mb-8 lg:mb-10"
           style={{ fontFamily: "'Noto Serif', serif" }}
         >
           See What's Popular
@@ -59,15 +61,18 @@ export default function PopularBikes() {
           {popularBikes.map((bike, index) => (
             <div
               key={bike.id}
-              className="bike-card bg-transparent border border-gray-300 rounded-lg shadow-none hover:shadow-md hover:border-[#f7931e] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="bike-card dark:bg-gray-900/50 border border-gray-300 dark:border-gray-700 rounded-lg shadow-none hover:shadow-md hover:border-[#f7931e] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined
+              }}
             >
               {/* Image Container */}
               <div className="relative bg-transparent p-3 sm:p-4">
                 {/* Wishlist Heart Icon */}
                 <button
                   onClick={() => toggleWishlist(bike.id)}
-                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full border border-gray-300 bg-transparent hover:border-[#f7931e] transition-colors duration-200"
+                  className="absolute top-3 right-3 z-10 p-1.5 rounded-full border border-gray-300 dark:border-gray-600 bg-transparent dark:bg-gray-800 hover:border-[#f7931e] transition-colors duration-200"
                   aria-label={
                     wishlist.includes(bike.id)
                       ? "Remove from wishlist"
@@ -103,7 +108,7 @@ export default function PopularBikes() {
               <div className="p-3 sm:p-4">
                 {/* Bike Name */}
                 <h3
-                  className="text-sm sm:text-base font-medium text-gray-800 mb-1"
+                  className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-1"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                 >
                   {bike.name}
@@ -111,7 +116,7 @@ export default function PopularBikes() {
 
                 {/* Price */}
                 <p
-                  className="text-lg sm:text-xl font-bold text-black mb-0.5"
+                  className="text-lg sm:text-xl font-bold text-black dark:text-white mb-0.5"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                 >
                   {bike.price}

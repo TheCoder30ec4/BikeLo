@@ -78,7 +78,7 @@ export default function Footer() {
             <Link to="/" className="footer-logo">
               <span className="footer-logo-text">
                 <span className="text-[#DC2626]">Bike</span>
-                <span className="text-black">-Lo</span>
+                <span className="text-black dark:text-white">-Lo</span>
               </span>
             </Link>
 
@@ -306,6 +306,11 @@ export default function Footer() {
           border-top: 1px solid rgba(247, 147, 30, 0.2);
         }
 
+        .dark .footer-container {
+          color: #ffffff;
+          border-top: 1px solid rgba(247, 147, 30, 0.3);
+        }
+
         .footer-content {
           position: relative;
           z-index: 10;
@@ -345,10 +350,18 @@ export default function Footer() {
           margin-bottom: 16px;
         }
 
+        .dark .footer-description {
+          color: #d1d5db;
+        }
+
         .footer-disclaimer {
           font-size: 0.75rem;
           color: #888888;
           margin-bottom: 24px;
+        }
+
+        .dark .footer-disclaimer {
+          color: #9ca3af;
         }
 
         .footer-social {
@@ -382,14 +395,26 @@ export default function Footer() {
           margin-bottom: 8px;
         }
 
+        .dark .footer-copyright {
+          color: #9ca3af;
+        }
+
         .footer-copyright p {
           color: #666666 !important;
+        }
+
+        .dark .footer-copyright p {
+          color: #9ca3af !important;
         }
 
         .footer-cin {
           font-size: 0.75rem;
           color: #888888;
           margin-bottom: 24px;
+        }
+
+        .dark .footer-cin {
+          color: #9ca3af;
         }
 
         .footer-cta {
@@ -425,10 +450,19 @@ export default function Footer() {
           font-weight: 500 !important;
         }
 
+        .dark .cta-outline {
+          color: #e5e7eb !important;
+          border: 1px solid rgba(247, 147, 30, 0.6) !important;
+        }
+
         .cta-outline:hover {
           border-color: #f7931e !important;
           background: rgba(247, 147, 30, 0.1) !important;
           color: #f7931e !important;
+        }
+
+        .dark .cta-outline:hover {
+          background: rgba(247, 147, 30, 0.2) !important;
         }
 
         /* Right Links Grid */
@@ -452,6 +486,10 @@ export default function Footer() {
           text-transform: uppercase;
         }
 
+        .dark .footer-heading {
+          color: #ffffff;
+        }
+
         .footer-links {
           list-style: none;
           padding: 0;
@@ -467,6 +505,10 @@ export default function Footer() {
           color: #555555;
           text-decoration: none;
           transition: color 0.2s ease;
+        }
+
+        .dark .footer-link {
+          color: #d1d5db;
         }
 
         .footer-link:hover {
@@ -494,10 +536,18 @@ export default function Footer() {
           text-transform: uppercase;
         }
 
+        .dark .location-heading {
+          color: #ffffff;
+        }
+
         .location-list {
           font-size: 0.8rem;
           color: #666666;
           line-height: 1.8;
+        }
+
+        .dark .location-list {
+          color: #9ca3af;
         }
 
         /* Skyline - hidden on transparent bg */

@@ -1,35 +1,48 @@
+import TvsLogo from "@/assets/TvsLogo.webp";
+import KotakLogo from "@/assets/KotakLogo.webp";
+import AXISBankLogo from "@/assets/AXISBank_Logo.webp";
+import ICICILogo from "@/assets/ICICI Logo.webp";
+import HondaLogo from "@/assets/HondaLogo.webp";
+import SuzukiLogo from "@/assets/SuzukiLogo.webp";
+import YamahaLogo from "@/assets/YamahaLogo.webp";
+
 export default function BrandMarquee() {
-  // Partner logos array with external image URLs
+  // Partner logos array with local image files
   const partners = [
     { 
       id: 1, 
-      src: "https://i.ibb.co/N92D9G3/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Logo-design-proposals-removebg-preview.png",
-      alt: "Partner Logo 1"
+      src: TvsLogo,
+      alt: "TVS Logo"
     },
     { 
       id: 2, 
-      src: "https://i.ibb.co/G31gG9y/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Create-a-logo-removebg-preview.png",
-      alt: "Partner Logo 2"
+      src: KotakLogo,
+      alt: "Kotak Logo"
     },
     { 
       id: 3, 
-      src: "https://i.ibb.co/jkSTBVP/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Logo-design-proposals-2-removebg-preview.png",
-      alt: "Partner Logo 3"
+      src: AXISBankLogo,
+      alt: "AXIS Bank Logo"
     },
     { 
       id: 4, 
-      src: "https://i.ibb.co/KNFTLHv/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Logo-design-proposals-1.png",
-      alt: "Partner Logo 4"
+      src: ICICILogo,
+      alt: "ICICI Logo"
     },
     { 
       id: 5, 
-      src: "https://i.ibb.co/G31gG9y/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Create-a-logo-removebg-preview.png",
-      alt: "Partner Logo 5"
+      src: HondaLogo,
+      alt: "Honda Logo"
     },
     { 
       id: 6, 
-      src: "https://i.ibb.co/N92D9G3/Screenshot-2020-10-20-My-Brand-New-Logo-My-Brand-New-Logo-Logo-design-proposals-removebg-preview.png",
-      alt: "Partner Logo 6"
+      src: SuzukiLogo,
+      alt: "Suzuki Logo"
+    },
+    { 
+      id: 7, 
+      src: YamahaLogo,
+      alt: "Yamaha Logo"
     },
   ];
 

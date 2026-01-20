@@ -10,10 +10,11 @@ export default function Home() {
     <>
       <Hero />
       <BrandMarquee />
+      <BuySellSection />
       <PremiumServices />
       <PopularBikes />
       <BrowseByStyle />
-      <BuySellSection />
+      
     </>
   );
 }

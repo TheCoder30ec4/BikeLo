@@ -1,35 +1,50 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/hooks/use-theme";
+import Inspection from "@/assets/Inspection.webp";
+import EngineWarranty from "@/assets/6MonthsWarranty.webp";
+import Servicing from "@/assets/servicing.webp";
+import Insurance from "@/assets/insurance.webp";
+import RC from "@/assets/RCTransfer.webp"
+
+
 
 // Benefits data for Buy tab
 const benefits = [
   {
     id: 1,
-    title: "200-Points Inspection",
-    description: "Every bike is carefully handpicked after a thorough quality inspection.",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+    title: "75 Points Inspection",
+    description: "Every bike is carefully handpicked after a thorough 75-point quality inspection.",
+    image: Inspection,
     icon: "🔍",
   },
   {
     id: 2,
-    title: "6-Month Warranty",
-    description: "Our way of being there for you through your bike ownership journey.",
-    image: "https://images.unsplash.com/photo-1568772585407-9361bd955bf3?w=400&h=300&fit=crop",
+    title: "6 Months Engine Warranty",
+    description: "Comprehensive engine warranty coverage for 6 months to ensure your peace of mind.",
+    image: EngineWarranty,
     icon: "🛡️",
   },
   {
     id: 3,
-    title: "5-Day Money Back",
-    description: "All our bikes come with a no-questions-asked 5-day money back guarantee.",
-    image: "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=400&h=300&fit=crop",
-    icon: "💰",
+    title: "2 Free Service",
+    description: "Get 2 complimentary service sessions to keep your bike in perfect condition.",
+    image: Servicing,
+    icon: "🔧",
   },
   {
     id: 4,
-    title: "Fixed Price Assurance",
-    description: "No more endless negotiations. Get the best deal upfront and right away.",
-    image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&h=300&fit=crop",
+    title: "1-Year Free Insurance",
+    description: "Enjoy complete protection with 1 year of free insurance coverage included.",
+    image: Insurance,
+    icon: "📋",
+  },
+  {
+    id: 5,
+    title: "100% RC TC Assurance",
+    description: "Complete assurance with 100% RC (Registration Certificate) and TC (Transfer Certificate) guarantee.",
+    image: RC,
     icon: "✓",
   },
 ];
@@ -55,6 +70,7 @@ const sellingPoints = [
 export default function BuySellSection() {
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
   const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
+  const { resolvedTheme } = useTheme();
 
   return (
     <section className="buy-sell-section py-10 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 bg-transparent">
@@ -67,7 +83,7 @@ export default function BuySellSection() {
               className={`px-6 sm:px-8 py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 ${
                 activeTab === "buy"
                   ? "bg-[#f7931e] text-white"
-                  : "bg-transparent text-gray-600 hover:text-[#f7931e]"
+                  : "bg-transparent text-gray-600 dark:text-gray-400 hover:text-[#f7931e]"
               }`}
               style={{ fontFamily: "'Noto Serif', serif" }}
               role="tab"
@@ -81,7 +97,7 @@ export default function BuySellSection() {
               className={`px-6 sm:px-8 py-2 sm:py-3 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 ${
                 activeTab === "sell"
                   ? "bg-[#f7931e] text-white"
-                  : "bg-transparent text-gray-600 hover:text-[#f7931e]"
+                  : "bg-transparent text-gray-600 dark:text-gray-400 hover:text-[#f7931e]"
               }`}
               style={{ fontFamily: "'Noto Serif', serif" }}
               role="tab"
@@ -105,19 +121,22 @@ export default function BuySellSection() {
           >
             {/* Section Heading */}
             <h2
-              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black text-center mb-8 lg:mb-10"
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white text-center mb-8 lg:mb-10"
               style={{ fontFamily: "'Noto Serif', serif" }}
             >
               Bikelo Benefits
             </h2>
 
             {/* Benefits Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6 mb-8 lg:mb-10">
               {benefits.map((benefit, index) => (
                 <div
                   key={benefit.id}
-                  className="benefit-card bg-transparent border border-gray-300 rounded-lg overflow-hidden hover:shadow-md hover:border-[#f7931e] transition-all duration-300 group"
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="benefit-card border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-md hover:border-[#f7931e] transition-all duration-300 group"
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`,
+                    backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined
+                  }}
                 >
                   {/* Image with Icon Overlay */}
                   <div className="relative">
@@ -128,20 +147,23 @@ export default function BuySellSection() {
                       loading="lazy"
                     />
                     {/* Icon Overlay */}
-                    <div className="absolute bottom-2 right-2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-200">
+                    <div className="absolute bottom-2 right-2 w-10 h-10 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md border border-gray-200 dark:border-gray-700">
                       <span className="text-lg">{benefit.icon}</span>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-4">
+                  <div 
+                    className="p-4 dark:bg-transparent"
+                    style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
+                  >
                     <h3
-                      className="text-base font-bold text-black mb-2 group-hover:text-[#f7931e] transition-colors duration-300"
+                      className="text-base font-bold text-black dark:text-white mb-2 group-hover:text-[#f7931e] transition-colors duration-300"
                       style={{ fontFamily: "'Noto Serif', serif" }}
                     >
                       {benefit.title}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                       {benefit.description}
                     </p>
                   </div>
@@ -214,7 +236,7 @@ export default function BuySellSection() {
               <div>
                 {/* Heading */}
                 <h2
-                  className="text-xl sm:text-2xl lg:text-3xl font-bold text-black mb-4"
+                  className="text-xl sm:text-2xl lg:text-3xl font-bold text-black dark:text-white mb-4"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                 >
                   Select your bike brand to get started
@@ -223,7 +245,7 @@ export default function BuySellSection() {
                 {/* Selling Points */}
                 <div className="flex flex-wrap gap-4 sm:gap-6 mb-6">
                   {sellingPoints.map((point, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                    <div key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                       <span className="text-[#f7931e]">{point.icon}</span>
                       <span>{point.text}</span>
                     </div>
@@ -236,11 +258,12 @@ export default function BuySellSection() {
                     <button
                       key={brand.id}
                       onClick={() => setSelectedBrand(brand.id)}
-                      className={`brand-card p-3 sm:p-4 bg-transparent border rounded-lg flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-md ${
+                      className={`brand-card p-3 sm:p-4 dark:bg-transparent border rounded-lg flex flex-col items-center justify-center gap-2 transition-all duration-300 hover:shadow-md ${
                         selectedBrand === brand.id
                           ? "border-[#f7931e] shadow-md"
-                          : "border-gray-300 hover:border-[#f7931e]"
+                          : "border-gray-300 dark:border-gray-700 hover:border-[#f7931e]"
                       }`}
+                      style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
                     >
                       <img
                         src={brand.logo}
@@ -248,17 +271,18 @@ export default function BuySellSection() {
                         className="h-6 sm:h-8 object-contain"
                         loading="lazy"
                       />
-                      <span className="text-xs sm:text-sm text-gray-600 font-medium">
+                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">
                         {brand.name}
                       </span>
                     </button>
                   ))}
                   {/* More Button */}
                   <button
-                    className="p-3 sm:p-4 bg-transparent border border-gray-300 rounded-lg flex items-center justify-center transition-all duration-300 hover:border-[#f7931e] hover:shadow-md"
+                    className="p-3 sm:p-4 dark:bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg flex items-center justify-center transition-all duration-300 hover:border-[#f7931e] hover:shadow-md"
+                    style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
                   >
                     <span
-                      className="text-sm font-bold text-black"
+                      className="text-sm font-bold text-black dark:text-white"
                       style={{ fontFamily: "'Noto Serif', serif" }}
                     >
                       MORE

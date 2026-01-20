@@ -40,7 +40,7 @@ export default function BrowseByStyle() {
       <div className="container mx-auto max-w-6xl">
         {/* Section Title */}
         <h2
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black text-center mb-8 lg:mb-10"
+          className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black dark:text-white text-center mb-8 lg:mb-10"
           style={{ fontFamily: "'Noto Serif', serif" }}
         >
           Browse By Style
@@ -68,7 +68,7 @@ export default function BrowseByStyle() {
               {/* Category Label */}
               <div className="pb-4 sm:pb-5">
                 <p
-                  className="text-center text-base sm:text-lg font-medium text-black group-hover:text-[#f7931e] transition-colors duration-300"
+                  className="text-center text-base sm:text-lg font-medium text-black dark:text-white group-hover:text-[#f7931e] transition-colors duration-300"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                 >
                   {category.name}
