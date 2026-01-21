@@ -5,7 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import Inspection from "@/assets/Inspection.webp";
 import EngineWarranty from "@/assets/6MonthsWarranty.webp";
 import Servicing from "@/assets/servicing.webp";
-import Insurance from "@/assets/insurance.webp";
+import Insurance from "@/assets/Insurance.webp";
 import RC from "@/assets/RCTransfer.webp"
 
 
