@@ -1,0 +1,28 @@
+PYTHON_VERSION := 3.11
+PACKAGE_NAME := lambda_package.zip
+LAMBDA_DIR := lambda
+LAMBDA_FUNCTION := lambda_function.py
+BUILD_DIR := build
+
+default: clean package
+
+# Clean previous builds
+clean:
+	rm -rf $(BUILD_DIR)
+	rm -f $(PACKAGE_NAME)
+
+# Install dependencies using Lambda runtime (Amazon Linux)
+dependencies:
+	mkdir -p $(BUILD_DIR)
+	docker run --rm \
+		--platform linux/amd64 \
+		-v "$$(pwd)":/var/task \
+		public.ecr.aws/sam/build-python$(PYTHON_VERSION) \
+		pip install -r $(LAMBDA_DIR)/requirements.txt -t /var/task/$(BUILD_DIR)
+
+# Package lambda
+package: dependencies
+	cd $(BUILD_DIR) && zip -r9 ../$(PACKAGE_NAME) . || true
+	cd $(LAMBDA_DIR) && zip -g ../$(PACKAGE_NAME) $(LAMBDA_FUNCTION)
+
+.PHONY: default clean dependencies package
