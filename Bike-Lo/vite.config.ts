@@ -10,4 +10,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    watch: {
+      // Workaround for Node.js v24 compatibility issue with Vite 7.x
+      // Use polling as fallback to avoid ROOT_GLOBSTAR error
+      usePolling: true,
+      interval: 1000,
+    },
+  },
 })

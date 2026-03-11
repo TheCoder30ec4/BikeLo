@@ -15,7 +15,7 @@ const benefits = [
   {
     id: 1,
     title: "75 Points Inspection",
-    description: "Every bike is carefully handpicked after a thorough 75-point quality inspection.",
+    description: "Every bike is carefully han dpicked after a thorough 75-point quality inspection.",
     image: Inspection,
     icon: "🔍",
   },

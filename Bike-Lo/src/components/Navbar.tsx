@@ -7,13 +7,16 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
-import { Sun, Moon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { Sun, Moon, User } from "lucide-react";
 
 export default function Navbar() {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const { resolvedTheme, setTheme } = useTheme();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,13 +44,23 @@ export default function Navbar() {
   const isActive = (path: string) => location.pathname === path;
 
   const navLinks = [
-    { to: "/", label: "Home" },
     { to: "/buy", label: "Buy" },
     { to: "/sell", label: "Sell" },
     { to: "/service", label: "Service" },
     { to: "/parts", label: "Spare Parts" },
     { to: "/about", label: "About Us" },
   ];
+
+  // Show nav links when authenticated; add Admin link for admin role.
+  const visibleNavLinks = isAuthenticated
+    ? (() => {
+        const base = [...navLinks];
+        if (user && user.role === "admin") {
+          base.push({ to: "/admin", label: "Admin" });
+        }
+        return base;
+      })()
+    : [];
 
   return (
     <nav 
@@ -58,9 +71,9 @@ export default function Navbar() {
       style={{ background: 'transparent' }}
     >
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center relative">
           {/* Left: Logo */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 z-10">
             <Link 
               to="/" 
               className="flex items-center hover:opacity-80 transition-opacity"
@@ -74,35 +87,80 @@ export default function Navbar() {
           </div>
           
           {/* Center: Navigation Links */}
-          <div className="flex-1 flex items-center justify-center">
-            <NavigationMenu>
-              <NavigationMenuList>
-                {navLinks.map((link) => (
-                  <NavigationMenuItem key={link.to}>
-                    <Link
-                      to={link.to}
-                      className={cn(
-                        "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-[15px] font-bold transition-colors hover:text-[#f7931e] focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                        isActive(link.to)
-                          ? "text-[#f7931e]"
-                          : resolvedTheme === 'dark' ? "text-white" : "text-black"
-                      )}
-                      style={{ fontFamily: "'Noto Serif', serif" }}
-                    >
-                      {link.label}
-                    </Link>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+          {visibleNavLinks.length > 0 && (
+            <div className="flex-1 flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 z-0">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {visibleNavLinks.map((link) => (
+                    <NavigationMenuItem key={link.to}>
+                      <Link
+                        to={link.to}
+                        className={cn(
+                          "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-[15px] font-bold transition-colors hover:text-[#f7931e] focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+                          isActive(link.to)
+                            ? "text-[#f7931e]"
+                            : resolvedTheme === 'dark' ? "text-white" : "text-black"
+                        )}
+                        style={{ fontFamily: "'Noto Serif', serif" }}
+                      >
+                        {link.label}
+                      </Link>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
+          )}
           
-          {/* Right: Theme Toggle */}
-          <div className="flex-shrink-0 flex items-center">
+          {/* Right: Auth Buttons / Profile / Theme Toggle */}
+          <div className="flex-shrink-0 flex items-center gap-3 ml-auto z-10">
+            {!isAuthenticated ? (
+              <>
+                <Link to="/login" className="flex items-center">
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "text-[15px] font-bold h-9 px-4",
+                      resolvedTheme === 'dark' ? "text-white hover:text-[#f7931e]" : "text-black hover:text-[#f7931e]"
+                    )}
+                    style={{ fontFamily: "'Noto Serif', serif" }}
+                  >
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/signup" className="flex items-center">
+                  <Button
+                    className="text-[15px] font-bold h-9 px-4"
+                    style={{ 
+                      backgroundColor: '#f7931e',
+                      fontFamily: "'Noto Serif', serif"
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <Link to="/profile" className="flex items-center">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "text-[15px] font-bold h-9 px-4 flex items-center gap-2",
+                    isActive('/profile')
+                      ? "text-[#f7931e]"
+                      : resolvedTheme === 'dark' ? "text-white hover:text-[#f7931e]" : "text-black hover:text-[#f7931e]"
+                  )}
+                  style={{ fontFamily: "'Noto Serif', serif" }}
+                >
+                  <User className="w-4 h-4" />
+                  {user?.name?.split(' ')[0] || 'Profile'}
+                </Button>
+              </Link>
+            )}
             <button
               onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               className={cn(
-                "p-2 rounded-full transition-all duration-300 hover:scale-110",
+                "p-2 rounded-full transition-all duration-300 hover:scale-110 flex items-center justify-center w-9 h-9",
                 resolvedTheme === 'dark' 
                   ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700" 
                   : "bg-neutral-200 text-neutral-800 hover:bg-neutral-300"

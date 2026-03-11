@@ -7,9 +7,10 @@ interface BikeCardProps {
   bike: Bike;
   isWishlisted: boolean;
   onWishlistToggle: (bikeId: string) => void;
+  onClick?: (bikeId: string) => void;
 }
 
-export default function BikeCard({ bike, isWishlisted, onWishlistToggle }: BikeCardProps) {
+export default function BikeCard({ bike, isWishlisted, onWishlistToggle, onClick }: BikeCardProps) {
   const { resolvedTheme } = useTheme();
   
   const formatPrice = (price: number) => {
@@ -25,17 +26,22 @@ export default function BikeCard({ bike, isWishlisted, onWishlistToggle }: BikeC
 
   return (
     <Card 
-      className="group hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 dark:bg-gray-900/50"
+      className="group hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 cursor-pointer"
       style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
+      onClick={() => onClick?.(bike.id)}
     >
       <div className="relative">
-        <img
-          src={bike.imageUrl}
-          alt={`${bike.brand} ${bike.model}`}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+        {bike.imageUrl ? (
+          <img
+            src={bike.imageUrl}
+            alt={`${bike.brand} ${bike.model}`}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-48 bg-muted rounded" />
+        )}
         <button
-          onClick={() => onWishlistToggle(bike.id)}
+          onClick={(e) => { e.stopPropagation(); onWishlistToggle(bike.id); }}
           className="absolute top-3 right-3 p-2 bg-white dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
@@ -53,7 +59,7 @@ export default function BikeCard({ bike, isWishlisted, onWishlistToggle }: BikeC
           </svg>
         </button>
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-          {bike.tags.map((tag) => (
+          {bike.tags?.map((tag) => (
             <Badge
               key={tag}
               variant="default"

@@ -5,9 +5,10 @@ interface BikeGridProps {
   bikes: Bike[];
   wishlistedBikes: Set<string>;
   onWishlistToggle: (bikeId: string) => void;
+  onBikeClick?: (bikeId: string) => void;
 }
 
-export default function BikeGrid({ bikes, wishlistedBikes, onWishlistToggle }: BikeGridProps) {
+export default function BikeGrid({ bikes, wishlistedBikes, onWishlistToggle, onBikeClick }: BikeGridProps) {
   if (bikes.length === 0) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
@@ -38,6 +39,7 @@ export default function BikeGrid({ bikes, wishlistedBikes, onWishlistToggle }: B
           bike={bike}
           isWishlisted={wishlistedBikes.has(bike.id)}
           onWishlistToggle={onWishlistToggle}
+          onClick={() => onBikeClick && onBikeClick(bike.id)}
         />
       ))}
     </div>

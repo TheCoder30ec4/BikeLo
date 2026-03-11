@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import FilterSidebar from "@/components/FilterSidebar";
 import BikeGrid from "@/components/BikeGrid";
 import BenefitsSection from "@/components/BenefitsSection";
-import { mockBikes } from "@/data/mockBikes";
+import { getBikes, mapBikeResponseToBike } from "@/services/bikeService";
+import type { Bike } from "@/types/bike";
 
 export default function Buy() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 3]);
@@ -29,9 +31,34 @@ export default function Buy() {
     localStorage.setItem("bikeWishlist", JSON.stringify(Array.from(wishlistedBikes)));
   }, [wishlistedBikes]);
 
+  const [bikes, setBikes] = useState<Bike[]>([]);
+  const navigate = useNavigate();
+
+  // Fetch bikes from API (requires auth)
+  useEffect(() => {
+    let mounted = true;
+    getBikes()
+      .then((data) => {
+        if (!mounted) return;
+        const list = Array.isArray(data) ? data : [];
+        setBikes(list.map(mapBikeResponseToBike));
+      })
+      .catch((err) => {
+        console.error("Failed to load bikes", err);
+        if (!mounted) return;
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes("Unauthorized") || msg.includes("Invalid") || msg.includes("expired")) {
+          navigate("/login", { replace: true });
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [navigate]);
+
   // Filter bikes based on all criteria
   const filteredBikes = useMemo(() => {
-    return mockBikes.filter((bike) => {
+    return bikes.filter((bike) => {
       // Price filter
       if (bike.price < priceRange[0] || bike.price > priceRange[1]) {
         return false;
@@ -58,7 +85,11 @@ export default function Buy() {
 
       return true;
     });
-  }, [priceRange, selectedBrands, selectedYear, searchQuery]);
+  }, [bikes, priceRange, selectedBrands, selectedYear, searchQuery]);
+
+  const handleBikeClick = (bikeId: string) => {
+    navigate(`/buy/${encodeURIComponent(bikeId)}`);
+  };
 
   const handleWishlistToggle = (bikeId: string) => {
     setWishlistedBikes((prev) => {
@@ -97,6 +128,7 @@ export default function Buy() {
               bikes={filteredBikes}
               wishlistedBikes={wishlistedBikes}
               onWishlistToggle={handleWishlistToggle}
+              onBikeClick={handleBikeClick}
             />
           </div>
         </div>
