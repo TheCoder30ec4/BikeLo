@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
-import { useTheme } from '@/hooks/use-theme';
 import { meApi } from '@/services/authService';
 import type { UserResponse } from '@/types/api';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,6 @@ import { LogOut, User, Mail, Shield } from 'lucide-react';
 export default function Profile() {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { resolvedTheme } = useTheme();
   const [profile, setProfile] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

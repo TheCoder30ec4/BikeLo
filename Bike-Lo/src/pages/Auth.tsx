@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/use-auth';
-import { useTheme } from '@/hooks/use-theme';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+
 export default function Auth() {
   const location = useLocation();
   const [isSignUp, setIsSignUp] = useState(location.pathname === '/signup');
@@ -21,7 +21,6 @@ export default function Auth() {
   const { login, signup } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     setIsSignUp(location.pathname === '/signup');
@@ -103,7 +102,6 @@ export default function Auth() {
     visible: {
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
@@ -126,7 +124,6 @@ export default function Auth() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
@@ -359,7 +356,7 @@ interface SignUpFormProps {
   error: string;
   isLoading: boolean;
   handleSignup: (e: React.FormEvent) => void;
-  itemVariants: Record<string, unknown>;
+  itemVariants: any;
   switchMode: () => void;
   showMobileToggle: boolean;
   fieldErrors: { [k: string]: string };

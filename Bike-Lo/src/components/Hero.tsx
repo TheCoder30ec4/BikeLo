@@ -87,7 +87,7 @@ export default function Hero() {
                   style={{ fontFamily: "'Noto Serif', serif" }}
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.8, ease: 'easeInOut' }}
                 >
                   Your Dream Bike,
                 </motion.span>
@@ -96,7 +96,7 @@ export default function Hero() {
                   style={{ fontFamily: "'Noto Serif', serif" }}
                   initial={{ opacity: 0, y: 40 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.8, delay: 0.15, ease: 'easeInOut' }}
                 >
                   <span className="hero-highlight">Deliver</span> to
                 </motion.span>
@@ -139,7 +139,7 @@ export default function Hero() {
               style={{ fontFamily: "'Noto Serif', serif" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.5, ease: 'easeInOut' }}
             >
               Buy, sell & service pre-owned bikes with trust. 
               <span className="text-[#f7931e] font-semibold"> 10,000+ certified bikes</span> waiting for you.
@@ -150,7 +150,7 @@ export default function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.65, ease: 'easeInOut' }}
             >
               <Button
                 className="hero-btn bg-[#f7931e] hover:bg-[#e6851a] text-white font-bold px-8 py-6 text-lg rounded-md hover:scale-105 transition-transform duration-300"
@@ -171,7 +171,7 @@ export default function Hero() {
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.8, ease: 'easeInOut' }}
             >
               {/* Avatar Icons Placeholder */}
               <div className="flex -space-x-2">
@@ -225,7 +225,7 @@ export default function Hero() {
             className="flex justify-center lg:justify-end items-center"
             initial={{ opacity: 0, x: 60, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, delay: 0.3, ease: 'easeInOut' }}
           >
             <div className="relative w-full max-w-xl lg:max-w-3xl xl:max-w-4xl">
               <div className="relative h-[450px] sm:h-[550px] lg:h-[650px] xl:h-[750px] flex items-center justify-center">

@@ -71,10 +71,6 @@ export default function Signup() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.16, 1, 0.3, 1],
-      },
     },
   };
 
@@ -84,11 +80,6 @@ export default function Signup() {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
-        delay: 0.3,
-      },
     },
   };
 
@@ -98,10 +89,6 @@ export default function Signup() {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: {
-        duration: 0.4,
-        ease: [0.16, 1, 0.3, 1],
-      },
     },
   };
 

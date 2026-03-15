@@ -9,7 +9,6 @@ export default function VerifyOTP() {
   const location = useLocation();
   const navigate = useNavigate();
   const { verify } = useAuth();
-  const [otp, setOtp] = useState('');
   const [digits, setDigits] = useState<string[]>(new Array(6).fill(''));
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [error, setError] = useState('');
@@ -85,14 +84,19 @@ export default function VerifyOTP() {
       <motion.div className="w-full max-w-md" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg">
           <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Noto Serif', serif" }}>Verify OTP</h2>
-          <p className="text-sm text-muted-foreground mb-4">Enter the 6-digit code sent to {email}</p>
-          {error && <div className="text-sm text-destructive mb-3">{error}</div>}
+          <p className="text-sm text-muted-foreground mb-2">Enter the 6-digit code sent to {email}</p>
+          {error && <div className="text-sm text-destructive mb-2">{error}</div>}
+          {message && <div className="text-sm text-emerald-600 mb-2">{message}</div>}
           <form onSubmit={handleVerify} className="space-y-4">
             <div className="flex gap-2 justify-center">
               {digits.map((d, i) => (
                 <input
                   key={i}
-                  ref={(el) => (inputsRef.current[i] = el as HTMLInputElement)}
+                  ref={(el) => {
+                    if (el) {
+                      inputsRef.current[i] = el;
+                    }
+                  }}
                   inputMode="numeric"
                   pattern="[0-9]*"
                   maxLength={1}

@@ -127,7 +127,7 @@ export async function updateUserRoleApi(userId: number, payload: UpdateRoleReque
   return parseJson<UserResponse>(res);
 }
 
-export { getAccessToken, getRefreshToken, setTokens, clearTokens };
+export { getRefreshToken, setTokens, clearTokens };
 
 /** Legacy/optional: verify OTP via external webhook (used by VerifyOTP page). */
 export async function verifyOtpApi(email: string, otp: string): Promise<string> {
