@@ -68,7 +68,7 @@ def main():
     import uvicorn
     import os
     if os.getenv("DEPLOYMENT") == False:
-	 uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, root_path="/bikelo_apis", docs_url="/docs", openapi_url="/openapi.json")
+        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, root_path="/bikelo_apis", docs_url="/docs", openapi_url="/openapi.json")
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, root_path="/bikelo_apis")
 
 if __name__ == "__main__":
