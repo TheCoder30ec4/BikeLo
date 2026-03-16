@@ -2,7 +2,7 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: bikelo_postgres
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -11,22 +11,32 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - bikelo-network
-    restart: always
 
   backend:
     build: .
-    container_name: bikelo_backend
+    restart: always
     env_file:
       - .env
     depends_on:
       - postgres
-    ports:
-      - "8000:8000"
     volumes:
       - uploads:/app/uploads
+    expose:
+      - "8000"
     networks:
       - bikelo-network
+
+  nginx:
+    image: nginx:latest
     restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+    networks:
+      - bikelo-network
 
 volumes:
   postgres_data:
@@ -34,4 +44,3 @@ volumes:
 
 networks:
   bikelo-network:
-    driver: bridge
