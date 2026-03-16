@@ -3,7 +3,9 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
+
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -24,51 +26,68 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="BikeLo API", lifespan=lifespan)
+app = FastAPI(
+    title="BikeLo API",
+    lifespan=lifespan,
+    root_path="/bikelo_apis",
+    docs_url="/docs",
+    openapi_url="/openapi.json"
+)
 
-# CORS: allow frontend (Vite default dev origin) to call the API
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173", 
+        "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:5174",
-        "http://127.0.0.1:5174"
+        "http://127.0.0.1:5174",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Rate limiting (login/signup: 5/minute per IP)
+# Trusted hosts (important when behind Nginx)
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"]
+)
+
+# Rate limiting
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Auth routes: /auth/signup, /auth/login, /auth/refresh, /auth/me
+# Routers
 app.include_router(auth_router)
-# Bike routes (admin-only create): /bikes
 app.include_router(bike_router)
-# Sell-bike form (authenticated user): /sell-bikes
 app.include_router(sell_bike_router)
-# Simple sell listing: /sell-listings
 app.include_router(sell_listing_router)
 
-# Serve uploaded bike images at /static/bikes/... (ensure dir exists before mount)
+# Static files for uploaded images
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=settings.UPLOAD_DIR), name="static")
 
 
 @app.get("/")
 def root():
-    return {"message": "BikeLo API", "docs": "/docs"}
+    return {
+        "message": "BikeLo API",
+        "docs": "/bikelo_apis/docs"
+    }
 
 
 def main():
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, root_path="/bikelo_apis", docs_url="/docs", openapi_url="/openapi.json")
-    #uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, root_path="/bikelo_apis")
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
+
 
 if __name__ == "__main__":
     main()
