@@ -19,6 +19,9 @@ from controllers.sell_listing_controller import router as sell_listing_router
 from utils.rate_limit import limiter
 
 
+# ---------------------------------------------------------
+# Lifespan (startup tasks)
+# ---------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
@@ -26,6 +29,9 @@ async def lifespan(app: FastAPI):
     yield
 
 
+# ---------------------------------------------------------
+# FastAPI App
+# ---------------------------------------------------------
 app = FastAPI(
     title="BikeLo API",
     lifespan=lifespan,
@@ -34,42 +40,63 @@ app = FastAPI(
     openapi_url="/openapi.json"
 )
 
-# CORS
+
+# ---------------------------------------------------------
+# CORS (Frontend Access)
+# ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        # Local development
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
+
+        # Production frontend
+        "https://www.bike-lo.com",
+        "https://bike-lo.com",
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
-# Trusted hosts (important when behind Nginx)
+
+# ---------------------------------------------------------
+# Trusted Hosts (important behind Nginx)
+# ---------------------------------------------------------
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=["*"]
 )
 
-# Rate limiting
+
+# ---------------------------------------------------------
+# Rate Limiting
+# ---------------------------------------------------------
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+
+# ---------------------------------------------------------
 # Routers
+# ---------------------------------------------------------
 app.include_router(auth_router)
 app.include_router(bike_router)
 app.include_router(sell_bike_router)
 app.include_router(sell_listing_router)
 
-# Static files for uploaded images
+
+# ---------------------------------------------------------
+# Static files (uploaded images)
+# ---------------------------------------------------------
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=settings.UPLOAD_DIR), name="static")
 
 
+# ---------------------------------------------------------
+# Root Endpoint
+# ---------------------------------------------------------
 @app.get("/")
 def root():
     return {
@@ -78,6 +105,9 @@ def root():
     }
 
 
+# ---------------------------------------------------------
+# Run Server
+# ---------------------------------------------------------
 def main():
     import uvicorn
 
