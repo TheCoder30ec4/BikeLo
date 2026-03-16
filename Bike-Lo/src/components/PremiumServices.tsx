@@ -67,7 +67,7 @@ export default function PremiumServices() {
             QUALITY SERVICE GUARANTEED
           </p>
           <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black dark:text-white leading-tight"
+            className="text-2xl sm:text-4xl lg:text-5xl font-bold text-black dark:text-white leading-tight"
             style={{ fontFamily: "'Noto Serif', serif" }}
           >
             Premium Services
@@ -77,7 +77,7 @@ export default function PremiumServices() {
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
             <Card
               key={index}

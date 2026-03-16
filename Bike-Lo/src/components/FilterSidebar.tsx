@@ -3,6 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { SlidersHorizontal } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useTheme } from "@/hooks/use-theme";
 import { brands, yearOptions } from "@/data/mockBikes";
 
@@ -50,17 +59,8 @@ export default function FilterSidebar({
     }
   };
 
-  return (
-    <aside 
-      className="w-full lg:w-80 space-y-6 p-4 lg:p-6 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg"
-      style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
-    >
-      <div>
-        <h2 className="text-xl font-bold mb-4 text-black dark:text-white" style={{ fontFamily: "'Noto Serif', serif" }}>
-          Filters
-        </h2>
-      </div>
-
+  const FilterContent = (
+    <div className="space-y-6">
       {/* Search */}
       <div className="space-y-2">
         <Label htmlFor="search" className="text-black dark:text-white">Search Brand/Model</Label>
@@ -171,7 +171,50 @@ export default function FilterSidebar({
           </div>
         </RadioGroup>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop View */}
+      <aside 
+        className="hidden lg:block w-80 space-y-6 p-6 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg h-fit sticky top-24"
+        style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
+      >
+        <div>
+          <h2 className="text-xl font-bold mb-4 text-black dark:text-white" style={{ fontFamily: "'Noto Serif', serif" }}>
+            Filters
+          </h2>
+        </div>
+        {FilterContent}
+      </aside>
+
+      {/* Mobile View */}
+      <div className="block lg:hidden w-full mb-6">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full flex items-center justify-center gap-2 h-12 text-base font-semibold border-gray-300 dark:border-gray-700"
+              style={{ fontFamily: "'Noto Serif', serif" }}
+            >
+              <SlidersHorizontal className="h-5 w-5 text-[#f7931e]" />
+              <span className="text-black dark:text-white">Filters</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle className="text-left font-bold text-xl" style={{ fontFamily: "'Noto Serif', serif" }}>
+                Filters
+              </SheetTitle>
+            </SheetHeader>
+            <div className="mt-6">
+              {FilterContent}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 }
 

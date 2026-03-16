@@ -1,7 +1,4 @@
 import TvsLogo from "@/assets/TvsLogo.webp";
-import KotakLogo from "@/assets/KotakLogo.webp";
-import AXISBankLogo from "@/assets/AXISBank_Logo.webp";
-import ICICILogo from "@/assets/ICICI Logo.webp";
 import HondaLogo from "@/assets/HondaLogo.webp";
 import SuzukiLogo from "@/assets/SuzukiLogo.webp";
 import YamahaLogo from "@/assets/YamahaLogo.webp";
@@ -13,21 +10,6 @@ export default function BrandMarquee() {
       id: 1, 
       src: TvsLogo,
       alt: "TVS Logo"
-    },
-    { 
-      id: 2, 
-      src: KotakLogo,
-      alt: "Kotak Logo"
-    },
-    { 
-      id: 3, 
-      src: AXISBankLogo,
-      alt: "AXIS Bank Logo"
-    },
-    { 
-      id: 4, 
-      src: ICICILogo,
-      alt: "ICICI Logo"
     },
     { 
       id: 5, 
@@ -51,7 +33,7 @@ export default function BrandMarquee() {
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="clients-header">
-          <h3 className="clients-title">Our Partners</h3>
+          <h3 className="clients-title">BRANDS WE DEAL</h3>
         </div>
 
         {/* Clients Wrap */}

@@ -42,8 +42,8 @@ const benefits = [
   },
   {
     id: 5,
-    title: "100% RC TC Assurance",
-    description: "Complete assurance with 100% RC (Registration Certificate) and TC (Transfer Certificate) guarantee.",
+    title: "100% RC Transfer Assurance",
+    description: "Complete assurance with 100% RC transfer assurance.",
     image: RC,
     icon: "✓",
   },
@@ -208,7 +208,7 @@ export default function BuySellSection() {
                 <img
                   src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=500&fit=crop"
                   alt="Sell your bike"
-                  className="w-full h-64 sm:h-80 lg:h-full object-cover"
+                  className="w-full h-48 sm:h-80 lg:h-full object-cover"
                 />
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">

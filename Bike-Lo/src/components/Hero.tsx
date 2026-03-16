@@ -38,7 +38,7 @@ export default function Hero() {
 
   return (
     <section 
-      className="hero-section relative pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-10 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="hero-section relative pt-10 sm:pt-20 lg:pt-24 pb-8 sm:pb-10 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden"
       style={{ 
         ['--tile-hover' as string]: tileHoverColor,
       }}
@@ -81,7 +81,7 @@ export default function Hero() {
           <div className="text-center lg:text-left space-y-6 lg:space-y-8">
             {/* Heading */}
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight overflow-hidden text-black dark:text-white">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight overflow-hidden text-black dark:text-white">
                 <motion.span 
                   className="block"
                   style={{ fontFamily: "'Noto Serif', serif" }}
@@ -135,7 +135,7 @@ export default function Hero() {
 
             {/* Subheading */}
             <motion.p 
-              className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-xl mx-auto lg:mx-0"
+              className="text-base sm:text-xl text-gray-600 dark:text-gray-300 max-w-xl mx-auto lg:mx-0"
               style={{ fontFamily: "'Noto Serif', serif" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -214,7 +214,7 @@ export default function Hero() {
                 </div>
                 <div className="text-sm sm:text-base">
                   <span className="font-bold text-black dark:text-white">5.0</span>
-                  <span className="text-gray-600 dark:text-gray-400 ml-1">500k+ Customer Reviews</span>
+                  <span className="text-gray-600 dark:text-gray-400 ml-1">1000+ happy customers</span>
                 </div>
               </div>
             </motion.div>
@@ -228,11 +228,11 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.3, ease: 'easeInOut' }}
           >
             <div className="relative w-full max-w-xl lg:max-w-3xl xl:max-w-4xl">
-              <div className="relative h-[450px] sm:h-[550px] lg:h-[650px] xl:h-[750px] flex items-center justify-center">
+              <div className="relative h-[300px] sm:h-[550px] lg:h-[650px] xl:h-[750px] flex items-center justify-center">
                 <img
                   src={mock3}
                   alt="Motorcycle"
-                  className="w-full h-auto max-h-full object-contain scale-110 lg:scale-125 mt-12 lg:mt-16"
+                  className="w-full h-auto max-h-full object-contain scale-100 sm:scale-110 lg:scale-125 mt-4 sm:mt-12 lg:mt-16"
                   style={{ background: 'transparent' }}
                 />
               </div>

@@ -9,7 +9,14 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, User } from "lucide-react";
+import { Sun, Moon, User, Menu } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function Navbar() {
   const location = useLocation();
@@ -86,9 +93,9 @@ export default function Navbar() {
             </Link>
           </div>
           
-          {/* Center: Navigation Links */}
+          {/* Center: Navigation Links (Desktop) */}
           {visibleNavLinks.length > 0 && (
-            <div className="flex-1 flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 z-0">
+            <div className="hidden md:flex flex-1 items-center justify-center absolute left-1/2 transform -translate-x-1/2 z-0">
               <NavigationMenu>
                 <NavigationMenuList>
                   {visibleNavLinks.map((link) => (
@@ -112,8 +119,8 @@ export default function Navbar() {
             </div>
           )}
           
-          {/* Right: Auth Buttons / Profile / Theme Toggle */}
-          <div className="flex-shrink-0 flex items-center gap-3 ml-auto z-10">
+          {/* Right: Auth Buttons / Profile / Theme Toggle (Desktop) */}
+          <div className="hidden md:flex flex-shrink-0 items-center gap-3 ml-auto z-10">
             {!isAuthenticated ? (
               <>
                 <Link to="/login" className="flex items-center">
@@ -173,6 +180,102 @@ export default function Navbar() {
                 <Moon className="w-5 h-5" />
               )}
             </button>
+          </div>
+
+          {/* Mobile Menu & Theme Toggle */}
+          <div className="flex md:hidden flex-shrink-0 items-center gap-2 ml-auto z-10">
+            <button
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+              className={cn(
+                "p-2 rounded-full transition-all duration-300 hover:scale-110 flex items-center justify-center w-9 h-9",
+                resolvedTheme === 'dark' 
+                  ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700" 
+                  : "bg-neutral-200 text-neutral-800 hover:bg-neutral-300"
+              )}
+              aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {resolvedTheme === 'dark' ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="text-left font-bold text-2xl" style={{ fontFamily: "'Noto Serif', serif" }}>
+                    <span className="text-[#DC2626]">Bike</span>
+                    <span className={resolvedTheme === 'dark' ? 'text-white' : 'text-black'}>-Lo</span>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-4 py-8">
+                  <nav className="flex flex-col gap-2">
+                    {visibleNavLinks.map((link) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        className={cn(
+                          "px-4 py-3 rounded-md text-lg font-bold transition-colors hover:bg-gray-100 dark:hover:bg-gray-800",
+                          isActive(link.to)
+                            ? "text-[#f7931e] bg-orange-50 dark:bg-orange-900/20"
+                            : resolvedTheme === 'dark' ? "text-white" : "text-black"
+                        )}
+                        style={{ fontFamily: "'Noto Serif', serif" }}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </nav>
+                  
+                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3">
+                    {!isAuthenticated ? (
+                      <>
+                        <Link to="/login" className="w-full">
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start text-[15px] font-bold h-12"
+                            style={{ fontFamily: "'Noto Serif', serif" }}
+                          >
+                            Login
+                          </Button>
+                        </Link>
+                        <Link to="/signup" className="w-full">
+                          <Button
+                            className="w-full justify-start text-[15px] font-bold h-12"
+                            style={{ 
+                              backgroundColor: '#f7931e',
+                              fontFamily: "'Noto Serif', serif"
+                            }}
+                          >
+                            Sign Up
+                          </Button>
+                        </Link>
+                      </>
+                    ) : (
+                      <Link to="/profile" className="w-full">
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-[15px] font-bold h-12 flex items-center gap-2",
+                            isActive('/profile') && "text-[#f7931e] border-[#f7931e]"
+                          )}
+                          style={{ fontFamily: "'Noto Serif', serif" }}
+                        >
+                          <User className="w-4 h-4" />
+                          {user?.name || 'Profile'}
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

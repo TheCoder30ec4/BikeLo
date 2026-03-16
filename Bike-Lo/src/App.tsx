@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { ThemeProvider } from './hooks/use-theme'
 import { AuthProvider } from './hooks/use-auth'
 import { BackgroundComponents } from './components/ui/background-components'
@@ -22,6 +22,10 @@ import './App.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 function App() {
+  const location = useLocation();
+  const hideFooterRoutes = ['/login', '/signup'];
+  const shouldShowFooter = !hideFooterRoutes.includes(location.pathname);
+
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -48,7 +52,7 @@ function App() {
               </Routes>
             </ErrorBoundary>
           </main>
-          <Footer />
+          {shouldShowFooter && <Footer />}
         </BackgroundComponents>
       </AuthProvider>
     </ThemeProvider>

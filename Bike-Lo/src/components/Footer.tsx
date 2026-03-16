@@ -27,7 +27,6 @@ export default function Footer() {
 
   const servicingLinks = [
     { label: "Periodic service", href: "/service/periodic" },
-    { label: "AC servicing", href: "/service/ac" },
     { label: "Clutch & suspension", href: "/service/clutch" },
     { label: "Health check services", href: "/service/health" },
     { label: "Wheel care", href: "/service/wheel" },
@@ -84,10 +83,8 @@ export default function Footer() {
 
             {/* Description */}
             <p className="footer-description">
-              Bike-Lo is the most trusted way of buying and selling used bikes. Choose from over
-              10K fully inspected second-hand bike models. Select online and book a test ride at
-              your home or at a Bike-Lo Hub near you. Get a no-questions-asked* 5-day
-              money back guarantee and a free one-year comprehensive service warranty with
+              Bike-Lo is the most trusted way of buying and selling used bikes. Select online and book a test ride at
+              your home or at a Bike-Lo Hub near you. Get a free one-year comprehensive service warranty with
               Assured Resale Value on every Bike-Lo bike.
             </p>
 
@@ -113,7 +110,7 @@ export default function Footer() {
 
             {/* Copyright */}
             <div className="footer-copyright">
-              <p>© 2025 Bike-Lo Technologies Private Limited.</p>
+              <p>© 2024 BIKEZLO MOTORRAD INDIA LLP.</p>
               <p>All rights reserved.</p>
             </div>
 
@@ -220,18 +217,20 @@ export default function Footer() {
 
         {/* Bottom Section - Locations */}
         <div className="footer-locations">
-          <div className="location-section">
-            <h5 className="location-heading">BUY USED BIKE IN</h5>
-            <p className="location-list">
-              {buyLocations.join(" | ")}
-            </p>
-          </div>
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-12">
+            <div className="location-section flex-1 mb-0">
+              <h5 className="location-heading">BUY USED BIKE IN</h5>
+              <p className="location-list">
+                {buyLocations.join(" | ")}
+              </p>
+            </div>
 
-          <div className="location-section">
-            <h5 className="location-heading">BIKE REPAIR & SERVICING IN</h5>
-            <p className="location-list">
-              {serviceLocations.join(" | ")}
-            </p>
+            <div className="location-section flex-1 mb-0">
+              <h5 className="location-heading">BIKE REPAIR & SERVICING IN</h5>
+              <p className="location-list">
+                {serviceLocations.join(" | ")}
+              </p>
+            </div>
           </div>
         </div>
       </div>
