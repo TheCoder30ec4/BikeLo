@@ -10,6 +10,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from config import settings
 from DataBase.core import init_db
+from seed_admin import seed_admin
 from controllers.auth_controller import router as auth_router
 from controllers.bike_controller import router as bike_router
 from controllers.sell_bike_controller import router as sell_bike_router
@@ -21,6 +22,7 @@ from utils.rate_limit import limiter
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    seed_admin()
     Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
     yield
 
