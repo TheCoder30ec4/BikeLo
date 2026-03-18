@@ -4,3 +4,8 @@ __pycache__/
 *.pyc
 uploads/
 .venv/
+
+
+nginx/cert.pem
+nginx/key.pem
+*.pem
