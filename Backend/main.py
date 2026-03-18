@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="BikeLo API", lifespan=lifespan, root_path="/bikelo_apis")
+app = FastAPI(title="BikeLo API", lifespan=lifespan)
 
 # CORS: allow frontend (Vite default dev origin) to call the API
 app.add_middleware(
