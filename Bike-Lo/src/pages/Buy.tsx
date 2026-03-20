@@ -11,20 +11,17 @@ export default function Buy() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [wishlistedBikes, setWishlistedBikes] = useState<Set<string>>(new Set());
-
-  // Load wishlist from localStorage on mount
-  useEffect(() => {
+  const [wishlistedBikes, setWishlistedBikes] = useState<Set<string>>(() => {
     const savedWishlist = localStorage.getItem("bikeWishlist");
     if (savedWishlist) {
       try {
-        const wishlistArray = JSON.parse(savedWishlist);
-        setWishlistedBikes(new Set(wishlistArray));
+        return new Set(JSON.parse(savedWishlist));
       } catch (error) {
         console.error("Error loading wishlist:", error);
       }
     }
-  }, []);
+    return new Set();
+  });
 
   // Save wishlist to localStorage whenever it changes
   useEffect(() => {

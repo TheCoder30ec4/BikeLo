@@ -59,8 +59,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     const token = localStorage.getItem("bikelo_access_token");
     if (!token) {
-      setUser(null);
-      setIsLoading(false);
+      Promise.resolve().then(() => {
+        setUser(null);
+        setIsLoading(false);
+      });
       return;
     }
     meApi()

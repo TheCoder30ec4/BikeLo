@@ -24,7 +24,8 @@ export interface RadioGroupItemProps
 
 const RadioGroupItem = React.forwardRef<HTMLInputElement, RadioGroupItemProps>(
   ({ className, label, id, ...props }, ref) => {
-    const inputId = id || `radio-${Math.random().toString(36).substr(2, 9)}`;
+    const autoId = React.useId();
+    const inputId = id || `radio-${autoId}`;
     return (
       <div className="flex items-center space-x-2">
         <input

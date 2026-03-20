@@ -31,7 +31,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     const initialResolved = getResolvedTheme(theme);
-    setResolvedTheme(initialResolved);
+    Promise.resolve().then(() => setResolvedTheme(initialResolved));
     root.classList.toggle('dark', initialResolved === 'dark');
     
     if (theme === 'system') {

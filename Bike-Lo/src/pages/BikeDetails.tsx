@@ -16,7 +16,7 @@ export default function BikeDetails() {
 
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
+    Promise.resolve().then(() => { if (mounted) setLoading(true); });
     const decodedId = id ? decodeURIComponent(id) : id;
     getBikes()
       .then((data) => {

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
 import { createBike } from '@/services/bikeService';
 
 export default function AdminAddBike() {
@@ -63,7 +64,7 @@ export default function AdminAddBike() {
 
   const validate = () => {
     if (!make.trim() || !modelName.trim()) return 'Make and model are required';
-    if (!year || Number(year) <= 1900) return 'Enter a valid year';
+    if (!year || Number(year) < 1900 || Number(year) > 2100 || !Number.isInteger(Number(year))) return 'Enter a valid year between 1900 and 2100';
     if (kmDriven === '' || Number(kmDriven) < 0) return 'Enter valid km driven';
     if (ownership === '' || Number(ownership) < 0) return 'Enter valid ownership count';
     if (price === '' || Number(price) < 0) return 'Enter valid price';
@@ -75,6 +76,7 @@ export default function AdminAddBike() {
     const v = validate();
     if (v) {
       setError(v);
+      toast.error(v);
       return;
     }
     setError(null);
@@ -96,9 +98,12 @@ export default function AdminAddBike() {
       setIsUploading(true);
       await createBike(fd);
       setUploadComplete(true);
+      toast.success('Bike added successfully!');
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Failed to save bike.');
+      const msg = err instanceof Error ? err.message : 'Failed to save bike.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
       setIsUploading(false);
@@ -225,7 +230,7 @@ export default function AdminAddBike() {
 
           <div className="flex items-center gap-3 mt-4">
             <Button type="submit" disabled={isSubmitting || isUploading}>
-              {isUploading ? 'Uploading...' : isSubmitting ? 'Saving...' : 'Save Bike'}
+              {isUploading ? 'Uploading...' : isSubmitting ? 'Saving...' : 'Add Bike'}
             </Button>
             <Button variant="outline" onClick={() => navigate('/admin')}>Cancel</Button>
           </div>

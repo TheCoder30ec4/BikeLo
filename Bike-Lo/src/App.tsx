@@ -1,25 +1,26 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { ThemeProvider } from './hooks/use-theme'
-import { AuthProvider } from './hooks/use-auth'
-import { BackgroundComponents } from './components/ui/background-components'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import Bikes from './pages/Bikes'
-import Buy from './pages/Buy'
-import Sell from './pages/Sell'
-import Service from './pages/Service'
-import Parts from './pages/Parts'
-import About from './pages/About'
-import Auth from './pages/Auth'
-import Profile from './pages/Profile'
-import VerifyOTP from './pages/VerifyOTP'
-import Admin from './pages/Admin'
-import AdminAddBike from './pages/AdminAddBike'
-import AdminUsers from './pages/AdminUsers'
-import BikeDetails from './pages/BikeDetails'
-import './App.css'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { Toaster } from 'sonner'
+import { ThemeProvider } from '@/hooks/use-theme'
+import { AuthProvider } from '@/hooks/use-auth'
+import { BackgroundComponents } from '@/components/ui/background-components'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import Home from '@/pages/Home'
+import Bikes from '@/pages/Bikes'
+import Buy from '@/pages/Buy'
+import Sell from '@/pages/Sell'
+import Service from '@/pages/Service'
+import Parts from '@/pages/Parts'
+import About from '@/pages/About'
+import Auth from '@/pages/Auth'
+import Profile from '@/pages/Profile'
+import VerifyOTP from '@/pages/VerifyOTP'
+import Admin from '@/pages/Admin'
+import AdminAddBike from '@/pages/AdminAddBike'
+import AdminUsers from '@/pages/AdminUsers'
+import BikeDetails from '@/pages/BikeDetails'
+import '@/App.css'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 function App() {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
             </ErrorBoundary>
           </main>
           {shouldShowFooter && <Footer />}
+          <Toaster position="bottom-right" theme="system" />
         </BackgroundComponents>
       </AuthProvider>
     </ThemeProvider>

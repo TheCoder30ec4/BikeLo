@@ -17,12 +17,12 @@ export default function Profile() {
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
-      setLoading(false);
+      Promise.resolve().then(() => setLoading(false));
       return;
     }
     let cancelled = false;
-    setLoading(true);
-    setError(null);
+    Promise.resolve().then(() => setLoading(true));
+    Promise.resolve().then(() => setError(null));
     meApi()
       .then((data) => {
         if (!cancelled) setProfile(data);
@@ -34,7 +34,7 @@ export default function Profile() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [isAuthenticated, user?.id]);
+  }, [isAuthenticated, user, user?.id]);
 
   const handleLogout = () => {
     logout();

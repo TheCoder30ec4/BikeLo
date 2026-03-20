@@ -17,13 +17,6 @@ export default function VerifyOTP() {
   const [isVerifying, setIsVerifying] = useState(false);
 
   const email = (location.state as any)?.email || '';
-  if (!email) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="p-8 bg-card rounded-lg">No email provided. Go back to signup.</div>
-      </div>
-    );
-  }
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +71,14 @@ export default function VerifyOTP() {
     }, 1000);
     return () => clearInterval(t);
   }, [resendTimer]);
+
+  if (!email) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="p-8 bg-card rounded-lg">No email provided. Go back to signup.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-16">
