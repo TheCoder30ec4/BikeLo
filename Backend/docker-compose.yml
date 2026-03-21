@@ -41,9 +41,7 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: always
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
-    env_file:
-      - .env
+    command: tunnel --no-autoupdate --url http://nginx:80
     depends_on:
       - nginx
     networks:
