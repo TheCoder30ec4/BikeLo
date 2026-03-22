@@ -17,12 +17,5 @@ class SellBikeResponse(BaseModel):
     created_at: datetime
     updated_at: datetime | None = None
 
-    @field_validator('invoice_url', 'rc_card_url', mode='after')
-    @classmethod
-    def prepend_base_url(cls, v: str | None) -> str | None:
-        if v and v.startswith("/"):
-            return f"{settings.API_BASE_URL.rstrip('/')}{v}"
-        return v
-
     class Config:
         from_attributes = True

@@ -11,6 +11,7 @@ from DTOs.auth_DTO import (
     TokenResponse,
     UpdateRoleRequest,
     UserResponse,
+    VerifyOTPRequest,
 )
 from dependencies.auth import CurrentUser, RequireAdmin
 from services.auth_service import AuthService
@@ -18,6 +19,8 @@ from tables.users import User
 from utils.rate_limit import limiter
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+from fastapi.security import OAuth2PasswordRequestForm
 
 
 @router.post("/signup", response_model=TokenResponse)
@@ -43,8 +46,25 @@ def login(
     data: LoginRequest,
     db: Session = Depends(get_db),
 ):
+    """Frontend JSON login endpoint"""
     service = AuthService(db)
     access, refresh = service.login(data)
+    return TokenResponse(
+        access_token=access,
+        refresh_token=refresh,
+        token_type="bearer",
+    )
+
+
+@router.post("/swagger-token", response_model=TokenResponse, include_in_schema=False)
+def swagger_login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    """FastAPI Swagger UI login form endpoint"""
+    service = AuthService(db)
+    login_data = LoginRequest(email=form_data.username, password=form_data.password)
+    access, refresh = service.login(login_data)
     return TokenResponse(
         access_token=access,
         refresh_token=refresh,
@@ -105,14 +125,25 @@ def update_user_role(
     return UserResponse.model_validate(user)
 
 
-# --- Password reset (placeholders; wire to email service in production) ---
+@router.post("/verify-otp")
+def verify_otp(
+    data: VerifyOTPRequest,
+    db: Session = Depends(get_db),
+):
+    """Verify OTP and activate account."""
+    service = AuthService(db)
+    return service.verify_account(data)
+
+
 @router.post("/forgot-password")
-def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)) -> dict:
-    """Send reset link/token to email. Implement: generate token, store in DB, send email."""
-    return {"message": "If the email exists, a reset link will be sent"}
+def forgot_password(data: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """Send reset link/OTP to email."""
+    service = AuthService(db)
+    return service.forgot_password(data.email)
 
 
 @router.post("/reset-password")
-def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)) -> dict:
-    """Reset password with token from email. Implement: verify token, update password."""
-    return {"message": "Password reset (implement token verification and update)"}
+def reset_password(data: ResetPasswordRequest, db: Session = Depends(get_db)):
+    """Reset password with OTP from email."""
+    service = AuthService(db)
+    return service.reset_password(data)

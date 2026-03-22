@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from DataBase.core import get_db
@@ -9,20 +9,20 @@ from repositories.user_repository import UserRepository
 from tables.users import User
 from utils.security import decode_access_token
 
-security = HTTPBearer(auto_error=False)
+security = OAuth2PasswordBearer(tokenUrl="auth/swagger-token", auto_error=False)
 
 
 def get_current_user(
     db: Annotated[Session, Depends(get_db)],
-    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(security)],
+    token: Annotated[str | None, Depends(security)],
 ) -> User:
-    if not credentials:
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    payload = decode_access_token(credentials.credentials)
+    payload = decode_access_token(token)
     if not payload:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

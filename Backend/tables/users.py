@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String ,DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from datetime import datetime
 from DataBase.core import Base
 
@@ -19,6 +19,8 @@ class User(Base):
     role = Column(String, nullable=False, default="user")
 
     status = Column(String, nullable=False, default="active")
+
+    is_verified = Column(Boolean, nullable=False, default=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
 

@@ -16,6 +16,7 @@ from controllers.bike_controller import router as bike_router
 from controllers.sell_bike_controller import router as sell_bike_router
 from controllers.sell_listing_controller import router as sell_listing_router
 from controllers.user_data_controller import router as user_data_router
+from controllers.lead_controller import router as lead_router
 from utils.rate_limit import limiter
 
 
@@ -58,6 +59,8 @@ app.include_router(sell_bike_router)
 app.include_router(sell_listing_router)
 # User Data (admin)
 app.include_router(user_data_router)
+# Lead routes
+app.include_router(lead_router)
 
 # Serve uploaded bike images at /static/bikes/... (ensure dir exists before mount)
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
@@ -71,7 +74,11 @@ def root():
 
 def main():
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
+    import os
+    from config import settings
+    # if DEPLOYMENT is False, use reload, otherwise no
+    is_development = os.getenv("DEPLOYMENT", "False").lower() not in ("true", "1", "yes")
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=is_development)
 
 
 if __name__ == "__main__":

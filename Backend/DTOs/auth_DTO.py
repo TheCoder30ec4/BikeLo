@@ -29,6 +29,7 @@ class UserResponse(BaseModel):
     phone: str
     role: str
     status: str
+    is_verified: bool
     created_at: datetime
 
     class Config:
@@ -45,11 +46,23 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class VerifyOTPRequest(BaseModel):
+    email: EmailStr
+    verify_otp: str = Field(alias="verify-otp")
+
+    class Config:
+        populate_by_name = True
+
+
 # Password reset (production: send email with token/link)
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
 
 class ResetPasswordRequest(BaseModel):
-    token: str
+    email: EmailStr
+    verify_otp: str = Field(alias="verify-otp")
     new_password: str = Field(min_length=8, max_length=72)
+
+    class Config:
+        populate_by_name = True

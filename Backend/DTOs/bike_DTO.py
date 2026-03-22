@@ -35,13 +35,6 @@ class BikeImageResponse(BaseModel):
     url: str
     created_at: datetime
 
-    @field_validator('url', mode='after')
-    @classmethod
-    def prepend_base_url(cls, v: str) -> str:
-        if v.startswith("/"):
-            return f"{settings.API_BASE_URL.rstrip('/')}{v}"
-        return v
-
     class Config:
         from_attributes = True
 
