@@ -1,5 +1,25 @@
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+
+
+def _configure_logging() -> None:
+    """Force DEBUG on the root logger and the lead controller.
+    Must be called AFTER uvicorn/gunicorn set up their handlers,
+    otherwise basicConfig is a no-op."""
+    fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+    # Add a console handler only if there isn't one already
+    if not root.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(fmt))
+        root.addHandler(handler)
+    # Specifically set the lead_controller logger to DEBUG
+    logging.getLogger("controllers.lead_controller").setLevel(logging.DEBUG)
+
+
+_configure_logging()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +42,8 @@ from utils.rate_limit import limiter
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Re-apply log level after uvicorn has initialised its own handlers
+    _configure_logging()
     init_db()
     seed_admin()
     Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)

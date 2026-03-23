@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getBikes, bikeImageUrl } from "@/services/bikeService";
+import { getBikes, bikeImageUrl, bookBikeLeadApi } from "@/services/bikeService";
+import { meApi } from "@/services/authService";
 import type { BikeResponse } from "@/types/api";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Shield, Gauge, Calendar, CheckCircle2 } from "lucide-react";
@@ -13,6 +14,8 @@ export default function BikeDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mainImage, setMainImage] = useState<string | null>(null);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingMsg, setBookingMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -39,6 +42,78 @@ export default function BikeDetails() {
       });
     return () => { mounted = false; };
   }, [id]);
+
+  const handleBookNow = useCallback(async () => {
+    if (!bike) return;
+    setBookingLoading(true);
+    setBookingMsg(null);
+
+    let userEmail = "unknown@bikelo.com";
+    let userName = "Customer";
+
+    // Fetch logged-in user details (requires valid JWT in localStorage)
+    try {
+      const me = await meApi();
+      console.debug("[BookNow] Current user:", me);
+      userEmail = me.email ?? userEmail;
+      userName = me.name ?? userName;
+    } catch (err) {
+      console.warn("[BookNow] Could not fetch user info — user may not be logged in:", err);
+      setBookingLoading(false);
+      setBookingMsg({ type: "error", text: "Please log in to book a bike." });
+      return;
+    }
+
+    const bikeTitle = `${bike.year} ${bike.make} ${bike.model_name}`;
+    const priceFormatted = `₹ ${Number(bike.price).toLocaleString("en-IN")}`;
+
+    // ── User confirmation email HTML ─────────────────────────────────────────
+    const userHtml = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#fff;">
+  <h2 style="color:#f7931e;">Booking Request Confirmed 🏍️</h2>
+  <p>Hi <strong>${userName}</strong>,</p>
+  <p>We've received your booking request for the <strong>${bikeTitle}</strong> at <strong>${priceFormatted}</strong>.</p>
+  <p>Our team will contact you at <strong>${userEmail}</strong> within 24 hours to confirm the details.</p>
+  <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+  <p style="color:#888;font-size:12px;">BikeLo — Buy &amp; Sell Bikes</p>
+</div>`.trim();
+
+    // ── Admin lead notification HTML ─────────────────────────────────────────
+    const adminHtml = `
+<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#fff;">
+  <h2 style="color:#f7931e;">New Lead — Bike Booking 🚨</h2>
+  <table style="width:100%;border-collapse:collapse;">
+    <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;">Customer</td><td style="padding:8px;border:1px solid #eee;">${userName}</td></tr>
+    <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;">Email</td><td style="padding:8px;border:1px solid #eee;">${userEmail}</td></tr>
+    <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;">Bike</td><td style="padding:8px;border:1px solid #eee;">${bikeTitle}</td></tr>
+    <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;">Price</td><td style="padding:8px;border:1px solid #eee;">${priceFormatted}</td></tr>
+    <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;">Bike ID</td><td style="padding:8px;border:1px solid #eee;">${bike.id}</td></tr>
+  </table>
+  <hr style="border:none;border-top:1px solid #eee;margin:24px 0;" />
+  <p style="color:#888;font-size:12px;">BikeLo Admin Notification</p>
+</div>`.trim();
+
+    const payload = {
+      email: userEmail,
+      subject: `Booking Request: ${bikeTitle}`,
+      "UserHTML ": userHtml,
+      "AdminHTML ": adminHtml,
+    };
+
+    console.debug("[BookNow] Sending lead payload to /leads/capture:", payload);
+
+    try {
+      const result = await bookBikeLeadApi(payload);
+      console.debug("[BookNow] Success:", result);
+      setBookingMsg({ type: "success", text: "🎉 Booking request sent! We'll contact you soon." });
+    } catch (err: any) {
+      console.error("[BookNow] Failed to capture lead:", err);
+      const msg = err?.message ?? "Failed to send booking request. Please try again.";
+      setBookingMsg({ type: "error", text: msg });
+    } finally {
+      setBookingLoading(false);
+    }
+  }, [bike]);
 
   // ── Loading ──────────────────────────────────────────────────────────────
   if (loading) {
@@ -201,13 +276,28 @@ export default function BikeDetails() {
           {/* Divider */}
           <div className="border-t border-neutral-200 dark:border-neutral-800" />
 
+          {/* Booking status message */}
+          {bookingMsg && (
+            <div
+              className={`rounded-xl px-4 py-3 text-sm font-semibold ${
+                bookingMsg.type === "success"
+                  ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
+                  : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
+              }`}
+            >
+              {bookingMsg.text}
+            </div>
+          )}
+
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              className="flex-1 py-4 bg-gradient-to-r from-[#f7931e] to-[#e6851a] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-orange-500/20"
+              onClick={handleBookNow}
+              disabled={bookingLoading}
+              className="flex-1 py-4 bg-gradient-to-r from-[#f7931e] to-[#e6851a] text-white font-black uppercase tracking-widest text-sm rounded-xl hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-orange-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ fontFamily: "'Noto Serif', serif" }}
             >
-              Book Now
+              {bookingLoading ? "Sending..." : "Book Now"}
             </button>
             <button
               className="flex-1 py-4 bg-transparent border-2 border-neutral-300 dark:border-neutral-700 text-black dark:text-white font-bold uppercase tracking-widest text-sm rounded-xl hover:border-[#f7931e]/60 hover:text-[#f7931e] transition-all"
