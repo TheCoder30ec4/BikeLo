@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import logoLight from '@/assets/logo-light.png';
 
 export default function Auth() {
   const location = useLocation();
@@ -46,7 +47,7 @@ export default function Auth() {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to login');
+      setError(err instanceof Error ? err.message : 'Failed to sign in');
     } finally {
       setIsLoading(false);
       setIsSubmitting(false);
@@ -105,9 +106,11 @@ export default function Auth() {
     },
   };
 
+  // When isSignUp=false (Sign In page): overlay sits on the RIGHT side covering the Sign Up form
+  // When isSignUp=true  (Sign Up page): overlay slides to the LEFT side covering the Sign In form
   const overlayVariants = {
-    signin: { x: '0%' },
-    signup: { x: '100%' },
+    signin: { x: '100%' }, // RIGHT — reveals sign-in form on the left
+    signup: { x: '0%' },   // LEFT  — reveals sign-up form on the right
   };
 
   const formVariants = {
@@ -170,12 +173,12 @@ export default function Auth() {
                   <Link
                     to="/"
                     className="inline-block mb-6"
-                    style={{ fontFamily: "'Noto Serif', serif" }}
                   >
-                    <span className="text-3xl font-bold text-white">
-                      <span className="text-white">Bike</span>
-                      <span className="text-white/80">-Lo</span>
-                    </span>
+                    <img
+                      src={logoLight}
+                      alt="Bike-Lo"
+                      className="h-25 w-auto object-contain brightness-0 invert"
+                    />
                   </Link>
 
                   <h2
@@ -202,8 +205,8 @@ export default function Auth() {
               </AnimatePresence>
             </motion.div>
 
-            {/* ── Left Column: Sign In Form (always visible on md+) ── */}
-            <CardContent className="flex flex-col justify-center p-8 md:p-10 bg-[var(--card)] text-[var(--card-foreground)]">
+            {/* ── Left Column: Sign In Form ── */}
+            <CardContent className="flex flex-col justify-center p-8 md:p-10 bg-[var(--card)]">
               <motion.div
                 key="signin-form"
                 variants={formVariants}
@@ -212,7 +215,7 @@ export default function Auth() {
                 exit="exit"
               >
                 <motion.h1
-                  className="text-3xl font-bold mb-1"
+                  className="text-3xl font-bold mb-1 text-black dark:text-white"
                   style={{ fontFamily: "'Noto Serif', serif" }}
                   variants={itemVariants}
                 >
@@ -234,7 +237,7 @@ export default function Auth() {
                   </AnimatePresence>
 
                   <motion.div className="space-y-2" variants={itemVariants}>
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="login-email" className="text-black dark:text-white">Email</Label>
                     <Input
                       id="login-email"
                       type="email"
@@ -251,7 +254,7 @@ export default function Auth() {
                   </motion.div>
 
                   <motion.div className="space-y-2" variants={itemVariants}>
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password" className="text-black dark:text-white">Password</Label>
                     <Input
                       id="login-password"
                       type="password"
@@ -290,7 +293,7 @@ export default function Auth() {
 
                 {/* Mobile toggle */}
                 <motion.div className="mt-6 text-center md:hidden" variants={itemVariants}>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-black dark:text-white/70">
                     Don't have an account?{' '}
                   </span>
                   <button
@@ -304,8 +307,8 @@ export default function Auth() {
               </motion.div>
             </CardContent>
 
-            {/* ── Right Column: Sign Up Form (visible on md+) ── */}
-            <CardContent className="hidden md:flex flex-col justify-center p-8 md:p-10 bg-[var(--card)] text-[var(--card-foreground)]">
+            {/* ── Right Column: Sign Up Form (desktop only) ── */}
+            <CardContent className="hidden md:flex flex-col justify-center p-8 md:p-10 bg-[var(--card)]">
               <motion.div
                 key="signup-form-right"
                 variants={formVariants}
@@ -384,7 +387,7 @@ function SignUpForm({
   return (
     <>
       <motion.h1
-        className="text-3xl font-bold mb-1"
+        className="text-3xl font-bold mb-1 text-black dark:text-white"
         style={{ fontFamily: "'Noto Serif', serif" }}
         variants={itemVariants}
       >
@@ -406,7 +409,7 @@ function SignUpForm({
         </AnimatePresence>
 
         <motion.div className="space-y-1.5" variants={itemVariants}>
-          <Label htmlFor="signup-name">Full Name</Label>
+          <Label htmlFor="signup-name" className="text-black dark:text-white">Full Name</Label>
           <Input
             id="signup-name"
             type="text"
@@ -420,7 +423,7 @@ function SignUpForm({
         </motion.div>
 
         <motion.div className="space-y-1.5" variants={itemVariants}>
-          <Label htmlFor="signup-email">Email</Label>
+          <Label htmlFor="signup-email" className="text-black dark:text-white">Email</Label>
           <Input
             id="signup-email"
             type="email"
@@ -437,7 +440,7 @@ function SignUpForm({
         </motion.div>
 
         <motion.div className="space-y-1.5" variants={itemVariants}>
-          <Label htmlFor="signup-phone">Phone Number</Label>
+          <Label htmlFor="signup-phone" className="text-black dark:text-white">Phone Number</Label>
           <Input
             id="signup-phone"
             type="tel"
@@ -454,7 +457,7 @@ function SignUpForm({
         </motion.div>
 
         <motion.div className="space-y-1.5" variants={itemVariants}>
-          <Label htmlFor="signup-password">Password</Label>
+          <Label htmlFor="signup-password" className="text-black dark:text-white">Password</Label>
           <Input
             id="signup-password"
             type="password"
@@ -468,7 +471,7 @@ function SignUpForm({
         </motion.div>
 
         <motion.div className="space-y-1.5" variants={itemVariants}>
-          <Label htmlFor="signup-confirm">Confirm Password</Label>
+          <Label htmlFor="signup-confirm" className="text-black dark:text-white">Confirm Password</Label>
           <Input
             id="signup-confirm"
             type="password"

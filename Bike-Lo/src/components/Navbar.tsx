@@ -10,6 +10,8 @@ import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, User, Menu } from "lucide-react";
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
 import {
   Sheet,
   SheetContent,
@@ -28,21 +30,21 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       // Show navbar when scrolling up or at top
       if (currentScrollY < lastScrollY || currentScrollY < 10) {
         setIsVisible(true);
-      } 
+      }
       // Hide navbar when scrolling down (after 100px)
       else if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -61,16 +63,16 @@ export default function Navbar() {
   // Show nav links when authenticated; add Admin link for admin role.
   const visibleNavLinks = isAuthenticated
     ? (() => {
-        const base = [...navLinks];
-        if (user && user.role === "admin") {
-          base.push({ to: "/admin", label: "Admin" });
-        }
-        return base;
-      })()
+      const base = [...navLinks];
+      if (user && user.role === "admin") {
+        base.push({ to: "/admin", label: "Admin" });
+      }
+      return base;
+    })()
     : [];
 
   return (
-    <nav 
+    <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-transform duration-300",
         isVisible ? "translate-y-0" : "-translate-y-full"
@@ -81,18 +83,18 @@ export default function Navbar() {
         <div className="flex h-16 items-center relative">
           {/* Left: Logo */}
           <div className="flex-shrink-0 z-10">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="flex items-center hover:opacity-80 transition-opacity"
-              style={{ fontFamily: "'Noto Serif', serif" }}
             >
-              <span className="text-4xl font-bold">
-                <span className="text-[#DC2626]">Bike</span>
-                <span className={resolvedTheme === 'dark' ? 'text-white' : 'text-black'}>-Lo</span>
-              </span>
+              <img
+                src={resolvedTheme === 'dark' ? logoLight : logoDark}
+                alt="Bike-Lo"
+                className="h-25 w-auto object-contain"
+              />
             </Link>
           </div>
-          
+
           {/* Center: Navigation Links (Desktop) */}
           {visibleNavLinks.length > 0 && (
             <div className="hidden md:flex flex-1 items-center justify-center absolute left-1/2 transform -translate-x-1/2 z-0">
@@ -118,7 +120,7 @@ export default function Navbar() {
               </NavigationMenu>
             </div>
           )}
-          
+
           {/* Right: Auth Buttons / Profile / Theme Toggle (Desktop) */}
           <div className="hidden md:flex flex-shrink-0 items-center gap-3 ml-auto z-10">
             {!isAuthenticated ? (
@@ -132,13 +134,13 @@ export default function Navbar() {
                     )}
                     style={{ fontFamily: "'Noto Serif', serif" }}
                   >
-                    Login
+                    Sign In
                   </Button>
                 </Link>
                 <Link to="/signup" className="flex items-center">
                   <Button
                     className="text-[15px] font-bold h-9 px-4"
-                    style={{ 
+                    style={{
                       backgroundColor: '#f7931e',
                       fontFamily: "'Noto Serif', serif"
                     }}
@@ -168,8 +170,8 @@ export default function Navbar() {
               onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               className={cn(
                 "p-2 rounded-full transition-all duration-300 hover:scale-110 flex items-center justify-center w-9 h-9",
-                resolvedTheme === 'dark' 
-                  ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700" 
+                resolvedTheme === 'dark'
+                  ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700"
                   : "bg-neutral-200 text-neutral-800 hover:bg-neutral-300"
               )}
               aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
@@ -188,8 +190,8 @@ export default function Navbar() {
               onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               className={cn(
                 "p-2 rounded-full transition-all duration-300 hover:scale-110 flex items-center justify-center w-9 h-9",
-                resolvedTheme === 'dark' 
-                  ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700" 
+                resolvedTheme === 'dark'
+                  ? "bg-neutral-800 text-yellow-400 hover:bg-neutral-700"
                   : "bg-neutral-200 text-neutral-800 hover:bg-neutral-300"
               )}
               aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
@@ -209,9 +211,12 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <SheetHeader>
-                  <SheetTitle className="text-left font-bold text-2xl" style={{ fontFamily: "'Noto Serif', serif" }}>
-                    <span className="text-[#DC2626]">Bike</span>
-                    <span className={resolvedTheme === 'dark' ? 'text-white' : 'text-black'}>-Lo</span>
+                  <SheetTitle className="text-left">
+                    <img
+                      src={resolvedTheme === 'dark' ? logoLight : logoDark}
+                      alt="Bike-Lo"
+                      className="h-25 w-auto object-contain"
+                    />
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-4 py-8">
@@ -232,7 +237,7 @@ export default function Navbar() {
                       </Link>
                     ))}
                   </nav>
-                  
+
                   <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3">
                     {!isAuthenticated ? (
                       <>
@@ -242,13 +247,13 @@ export default function Navbar() {
                             className="w-full justify-start text-[15px] font-bold h-12"
                             style={{ fontFamily: "'Noto Serif', serif" }}
                           >
-                            Login
+                            Sign In
                           </Button>
                         </Link>
                         <Link to="/signup" className="w-full">
                           <Button
                             className="w-full justify-start text-[15px] font-bold h-12"
-                            style={{ 
+                            style={{
                               backgroundColor: '#f7931e',
                               fontFamily: "'Noto Serif', serif"
                             }}

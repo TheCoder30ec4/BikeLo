@@ -3,13 +3,9 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import mock3 from "@/assets/Hero-Image.webp";
-import { Tiles } from "@/components/ui/tiles";
-import { useTheme } from "@/hooks/use-theme";
-import { cn } from "@/lib/utils";
 
 export default function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const { resolvedTheme } = useTheme();
   const titles = useMemo(
     () => ["Doorstep", "Dreams", "Journey", "Adventure", "Freedom"],
     []
@@ -27,53 +23,12 @@ export default function Hero() {
   }, [titleNumber, titles]);
 
   // Tile hover color based on theme
-  const tileHoverColor = resolvedTheme === 'dark' 
-    ? 'rgba(247, 147, 30, 0.2)' 
-    : 'rgba(247, 147, 30, 0.15)';
-
-  // Glow color based on theme
-  const glowColor = resolvedTheme === 'dark' 
-    ? 'oklch(0.55 0.18 260)' 
-    : '#FFF991';
 
   return (
     <section 
       className="hero-section relative pt-10 sm:pt-20 lg:pt-24 pb-8 sm:pb-10 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden"
-      style={{ 
-        ['--tile-hover' as string]: tileHoverColor,
-      }}
     >
-      {/* Tiles Background - Only for Hero */}
-      <div 
-        className="absolute inset-0 z-0 overflow-hidden"
-        style={{ opacity: resolvedTheme === 'dark' ? 0.45 : 0.55 }}
-      >
-        <Tiles 
-          rows={35}
-          cols={15}
-          tileSize="md"
-          className="w-full h-full"
-          tileClassName={cn(
-            "transition-colors duration-500",
-            resolvedTheme === 'dark' 
-              ? "border-neutral-800/35" 
-              : "border-neutral-300/45"
-          )}
-        />
-      </div>
 
-      {/* Gradient Glow Overlay */}
-      <div
-        className="absolute inset-0 z-1 pointer-events-none"
-        style={{
-          backgroundImage: `
-            radial-gradient(ellipse at top center, ${glowColor} 0%, transparent 60%),
-            radial-gradient(ellipse at bottom right, ${resolvedTheme === 'dark' ? 'rgba(147, 51, 234, 0.15)' : 'rgba(247, 147, 30, 0.08)'} 0%, transparent 50%)
-          `,
-          opacity: resolvedTheme === 'dark' ? 0.5 : 0.8,
-          mixBlendMode: resolvedTheme === 'dark' ? 'screen' : 'multiply',
-        }}
-      />
       {/* Content Layer - Above Tiles */}
       <div className="container mx-auto max-w-7xl relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">

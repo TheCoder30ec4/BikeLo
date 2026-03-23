@@ -4,8 +4,7 @@
  */
 export const API_BASE =
   (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_URL) ||
-  "https://100.64.188.35:8443";
-
+  "http://0.0.0.0:8080";
 const ACCESS_TOKEN_KEY = "bikelo_access_token";
 const REFRESH_TOKEN_KEY = "bikelo_refresh_token";
 

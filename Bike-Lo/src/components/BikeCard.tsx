@@ -1,6 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useTheme } from "@/hooks/use-theme";
 import type { Bike } from "@/types/bike";
 
 interface BikeCardProps {
@@ -11,42 +9,50 @@ interface BikeCardProps {
 }
 
 export default function BikeCard({ bike, isWishlisted, onWishlistToggle, onClick }: BikeCardProps) {
-  const { resolvedTheme } = useTheme();
-  
-  const formatPrice = (price: number) => {
-    return `₹ ${price.toFixed(2)} L`;
-  };
+  const formatPrice = (price: number) => `₹ ${price.toFixed(2)} L`;
 
-  const formatKms = (kms: number) => {
-    if (kms >= 1000) {
-      return `${(kms / 1000).toFixed(1)}k km`;
-    }
-    return `${kms} km`;
-  };
+  const formatKms = (kms: number) =>
+    kms >= 1000 ? `${(kms / 1000).toFixed(1)}k km` : `${kms} km`;
 
   return (
-    <Card 
-      className="group hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 cursor-pointer"
-      style={{ backgroundColor: resolvedTheme === 'light' ? '#FFFFFF' : undefined }}
+    <div
+      className="group relative bg-white/5 dark:bg-neutral-900/60 border border-white/10 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-[#f7931e]/40 hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_20px_50px_rgba(247,147,30,0.08)] transition-all duration-500 cursor-pointer backdrop-blur-sm"
       onClick={() => onClick?.(bike.id)}
     >
-      <div className="relative">
+      {/* Image */}
+      <div className="aspect-[4/3] overflow-hidden relative">
         {bike.imageUrl ? (
           <img
             src={bike.imageUrl}
             alt={`${bike.brand} ${bike.model}`}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover grayscale-[30%] brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-700"
           />
         ) : (
-          <div className="w-full h-48 bg-muted rounded" />
+          <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
+            <span className="text-neutral-600 text-sm">No Image</span>
+          </div>
         )}
+
+        {/* Tags top-left */}
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+          {bike.tags?.map((tag) => (
+            <Badge
+              key={tag}
+              className="bg-[#f7931e] text-white text-[10px] px-2 py-0.5 uppercase tracking-wide font-bold italic border-0"
+            >
+              {tag}
+            </Badge>
+          ))}
+        </div>
+
+        {/* Wishlist top-right */}
         <button
           onClick={(e) => { e.stopPropagation(); onWishlistToggle(bike.id); }}
-          className="absolute top-3 right-3 p-2 bg-white dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="absolute top-3 right-3 p-2 rounded-full backdrop-blur-md bg-black/30 hover:bg-black/50 transition-colors"
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
           <svg
-            className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "fill-none text-gray-600 dark:text-gray-400"}`}
+            className={`w-4 h-4 ${isWishlisted ? "fill-[#f7931e] text-[#f7931e]" : "fill-none text-white"}`}
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
@@ -58,73 +64,57 @@ export default function BikeCard({ bike, isWishlisted, onWishlistToggle, onClick
             />
           </svg>
         </button>
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-          {bike.tags?.map((tag) => (
-            <Badge
-              key={tag}
-              variant="default"
-              className="bg-[#f7931e] text-white text-xs px-2 py-0.5"
-            >
-              {tag}
-            </Badge>
-          ))}
+
+        {/* Price overlay bottom-right */}
+        <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-lg">
+          <span className="text-white font-bold text-base tracking-tight" style={{ fontFamily: "'Noto Serif', serif" }}>
+            {formatPrice(bike.price)}
+          </span>
         </div>
       </div>
 
-      <CardContent className="p-4">
-        <div className="space-y-3">
-          {/* Title */}
-          <div>
-            <h3 className="text-lg font-bold text-black dark:text-white" style={{ fontFamily: "'Noto Serif', serif" }}>
-              {bike.year} {bike.brand} {bike.model}
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{bike.variant}</p>
-          </div>
-
-          {/* Price & EMI */}
-          <div className="flex items-baseline justify-between">
-            <div>
-              <p className="text-2xl font-bold text-[#f7931e]" style={{ fontFamily: "'Noto Serif', serif" }}>
-                {formatPrice(bike.price)}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">EMI: ₹{bike.emi.toLocaleString()}/mo</p>
-            </div>
-          </div>
-
-          {/* Specs */}
-          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-3">
-            <div className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span>{formatKms(bike.kmsDriven)}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{bike.fuelType}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <span>{bike.transmission}</span>
-            </div>
-          </div>
-
-          {/* Location */}
-          <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span>{bike.location}</span>
-          </div>
+      {/* Content */}
+      <div className="p-5 space-y-4">
+        {/* Title + location */}
+        <div className="space-y-0.5">
+          <h3
+            className="text-lg font-bold text-black dark:text-white uppercase italic leading-tight group-hover:text-[#f7931e] transition-colors"
+            style={{ fontFamily: "'Noto Serif', serif" }}
+          >
+            {bike.year} {bike.brand} {bike.model}
+          </h3>
+          <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">
+            {bike.variant}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Spec chips */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { label: "KMs", value: formatKms(bike.kmsDriven) },
+            { label: "Fuel", value: bike.fuelType },
+            { label: "Trans", value: bike.transmission },
+          ].map((spec) => (
+            <div
+              key={spec.label}
+              className="bg-neutral-100 dark:bg-neutral-800/60 rounded-full px-2 py-1.5 flex flex-col items-center justify-center"
+            >
+              <span className="text-[9px] uppercase text-neutral-400 font-bold tracking-wider">{spec.label}</span>
+              <span className="text-[11px] text-black dark:text-white font-bold truncate w-full text-center">{spec.value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* EMI + CTA */}
+        <div className="flex items-center justify-between pt-1 border-t border-neutral-200 dark:border-neutral-800">
+          <span className="text-xs text-neutral-500">
+            EMI <span className="text-[#f7931e] font-semibold">₹{bike.emi.toLocaleString()}/mo</span>
+          </span>
+          <button className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-400 group-hover:text-[#f7931e] border border-neutral-300 dark:border-neutral-700 group-hover:border-[#f7931e]/50 px-3 py-1.5 rounded transition-all">
+            View Details →
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
-

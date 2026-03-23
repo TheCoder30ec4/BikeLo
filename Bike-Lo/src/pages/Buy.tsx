@@ -101,38 +101,48 @@ export default function Buy() {
   };
 
   return (
-    <div className="pt-16">
-      {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="lg:w-80 flex-shrink-0">
-            <FilterSidebar
-              priceRange={priceRange}
-              onPriceRangeChange={setPriceRange}
-              selectedBrands={selectedBrands}
-              onBrandsChange={setSelectedBrands}
-              selectedYear={selectedYear}
-              onYearChange={setSelectedYear}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
-          </div>
-
-          {/* Bike Grid */}
-          <div className="flex-1">
-            <BikeGrid
-              bikes={filteredBikes}
-              wishlistedBikes={wishlistedBikes}
-              onWishlistToggle={handleWishlistToggle}
-              onBikeClick={handleBikeClick}
-            />
-          </div>
-        </div>
+    <div className="flex min-h-screen pt-16">
+      {/* Sidebar — sticky, full height (desktop only; mobile uses Sheet) */}
+      <div className="hidden lg:block flex-shrink-0 px-4 sm:px-6 py-8">
+        <FilterSidebar
+          priceRange={priceRange}
+          onPriceRangeChange={setPriceRange}
+          selectedBrands={selectedBrands}
+          onBrandsChange={setSelectedBrands}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
       </div>
 
-      {/* Benefits Section */}
-      <BenefitsSection />
+      {/* Main content */}
+      <div className="flex-1 px-4 sm:px-6 lg:px-10 py-8 space-y-10 overflow-y-auto">
+        {/* Mobile filter trigger */}
+        <div className="block lg:hidden">
+          <FilterSidebar
+            priceRange={priceRange}
+            onPriceRangeChange={setPriceRange}
+            selectedBrands={selectedBrands}
+            onBrandsChange={setSelectedBrands}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+        </div>
+
+        {/* Bike grid with catalog header */}
+        <BikeGrid
+          bikes={filteredBikes}
+          wishlistedBikes={wishlistedBikes}
+          onWishlistToggle={handleWishlistToggle}
+          onBikeClick={handleBikeClick}
+        />
+
+        {/* Benefits */}
+        <BenefitsSection />
+      </div>
     </div>
   );
 }
