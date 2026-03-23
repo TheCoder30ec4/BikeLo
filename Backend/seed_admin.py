@@ -19,13 +19,19 @@ def seed_admin():
                 password=hashed_pw,
                 phone="0000000000",
                 role="admin",
-                status="active"
+                status="active",
+                is_verified=True
             )
             db.add(new_admin)
             db.commit()
             print("Admin user created successfully.")
+        elif not admin.is_verified:
+            print("Admin user exists but is not verified. Verifying now...")
+            admin.is_verified = True
+            db.commit()
+            print("Admin user verified successfully.")
         else:
-            print("Admin user already exists.")
+            print("Admin user already exists and is verified.")
     except Exception as e:
         db.rollback()
         print(f"Error seeding admin: {e}")
