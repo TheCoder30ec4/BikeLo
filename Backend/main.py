@@ -29,7 +29,6 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from config import settings
-from DataBase.core import init_db
 from seed_admin import seed_admin
 from controllers.auth_controller import router as auth_router
 from controllers.bike_controller import router as bike_router
@@ -44,7 +43,11 @@ from utils.rate_limit import limiter
 async def lifespan(app: FastAPI):
     # Re-apply log level after uvicorn has initialised its own handlers
     _configure_logging()
-    init_db()
+    
+    # Run database setup & migrations automatically
+    from migrate import run_migrations
+    run_migrations()
+    
     seed_admin()
     Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
     yield
