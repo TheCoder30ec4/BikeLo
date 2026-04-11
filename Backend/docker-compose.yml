@@ -19,6 +19,9 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/bikelo
+    command: /bin/sh -c "uv run python migrate.py && uv run python seed_admin.py && uv run uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4"
     depends_on:
       - postgres
     volumes:

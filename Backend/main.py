@@ -45,11 +45,6 @@ async def lifespan(app: FastAPI):
     # Re-apply log level after uvicorn has initialised its own handlers
     _configure_logging()
     
-    # Run database setup & migrations automatically
-    from migrate import run_migrations
-    run_migrations()
-    
-    seed_admin()
     Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
     yield
 
