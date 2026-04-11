@@ -40,7 +40,7 @@ def init_db() -> None:
     """
 
     # Import models so they are registered with SQLAlchemy's metadata
-    from tables import bikes, refresh_tokens, sell_bikes, sell_listings, users  # noqa: F401
+    from tables import bikes, refresh_tokens, sell_bikes, sell_listings, users, spare_parts  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 

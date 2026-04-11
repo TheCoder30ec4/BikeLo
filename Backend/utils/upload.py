@@ -50,6 +50,34 @@ async def save_bike_images(files: list[UploadFile], bike_id: int) -> list[str]:
     return urls
 
 
+async def save_spare_part_images(files: list[UploadFile], part_id: int) -> list[str]:
+    """
+    Save uploaded image files to uploads/spare_parts/{part_id}/ and return URLs for each.
+    """
+    if not files:
+        return []
+
+    base = Path(settings.UPLOAD_DIR) / "spare_parts" / str(part_id)
+    base.mkdir(parents=True, exist_ok=True)
+    urls = []
+
+    for f in files:
+        if not f.filename:
+            continue
+        ext = Path(f.filename).suffix.lower()
+        if ext not in ALLOWED_EXTENSIONS:
+            continue
+        content = await f.read()
+        if len(content) > MAX_FILE_SIZE:
+            continue
+        filename = f"{uuid.uuid4().hex}{ext}"
+        path = base / filename
+        path.write_bytes(content)
+        urls.append(f"/static/spare_parts/{part_id}/{filename}")
+
+    return urls
+
+
 async def save_sell_bike_document(
     file: UploadFile | None,
     sell_bike_id: int,
@@ -75,6 +103,15 @@ async def save_sell_bike_document(
 def delete_bike_upload_folder(bike_id: int) -> None:
     """Remove uploaded image folder for a bike. Safe if folder does not exist."""
     folder = Path(settings.UPLOAD_DIR) / "bikes" / str(bike_id)
+    if folder.exists():
+        for p in folder.iterdir():
+            p.unlink(missing_ok=True)
+        folder.rmdir()
+
+
+def delete_spare_part_upload_folder(part_id: int) -> None:
+    """Remove uploaded image folder for a spare part."""
+    folder = Path(settings.UPLOAD_DIR) / "spare_parts" / str(part_id)
     if folder.exists():
         for p in folder.iterdir():
             p.unlink(missing_ok=True)

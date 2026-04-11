@@ -13,6 +13,9 @@ class BikeBase(BaseModel):
     ownership: int = Field(ge=1)
     price: float = Field(ge=0)
     insurance: bool
+    is_new: bool = False
+    description: str | None = None
+    is_ad: bool = False
 
 
 class CreateBikeRequest(BikeBase):
@@ -28,6 +31,9 @@ class UpdateBikeRequest(BaseModel):
     ownership: int | None = Field(None, ge=1)
     price: float | None = Field(None, ge=0)
     insurance: bool | None = None
+    is_new: bool | None = None
+    description: str | None = None
+    is_ad: bool | None = None
 
 
 class BikeImageResponse(BaseModel):
@@ -49,6 +55,9 @@ class BikeResponse(BaseModel):
     ownership: int
     price: float
     insurance: bool
+    is_new: bool
+    description: str | None
+    is_ad: bool
     image_count: int
     created_at: datetime
     updated_at: datetime | None = None

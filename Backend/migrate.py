@@ -18,6 +18,18 @@ def run_migrations():
         cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified BOOLEAN NOT NULL DEFAULT FALSE;")
         print("✅ Added 'is_verified' column to 'users' table.")
         
+        # Add is_new to bikes
+        cursor.execute("ALTER TABLE bikes ADD COLUMN IF NOT EXISTS is_new BOOLEAN NOT NULL DEFAULT FALSE;")
+        print("✅ Added 'is_new' column to 'bikes' table.")
+        
+        # Add description to bikes
+        cursor.execute("ALTER TABLE bikes ADD COLUMN IF NOT EXISTS description TEXT;")
+        print("✅ Added 'description' column to 'bikes' table.")
+        
+        # Add is_ad to bikes
+        cursor.execute("ALTER TABLE bikes ADD COLUMN IF NOT EXISTS is_ad BOOLEAN NOT NULL DEFAULT FALSE;")
+        print("✅ Added 'is_ad' column to 'bikes' table.")
+        
     except Exception as e:
         print(f"❌ Error updating tables: {e}")
     finally:

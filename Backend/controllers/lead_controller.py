@@ -38,11 +38,18 @@ def capture_lead(request: Request, data: LeadCaptureRequest, current_user: Curre
 
     try:
         logger.debug("Forwarding lead payload to n8n: %s", url)
-        response = requests.post(url, json=payload, timeout=5)
+        response = requests.post(url, json=payload, timeout=7)
         logger.debug("n8n response status: %s", response.status_code)
+        
+        if response.status_code >= 500:
+            logger.error("n8n service error (%s): %s", response.status_code, response.text)
+            raise HTTPException(status_code=502, detail="The notification service (n8n) is currently unavailable (Status 530/500).")
+            
         response.raise_for_status()
         return {"message": "Lead captured successfully"}
+    except requests.Timeout:
+        logger.error("Timeout connecting to n8n webhook")
+        raise HTTPException(status_code=504, detail="Notification service timed out. Please try again.")
     except requests.RequestException as e:
         logger.error("Error sending lead webhook: %s", e)
-        print(f"Error sending lead webhook: {e}")
-        raise HTTPException(status_code=500, detail="Failed to notify via email. Please try again later.")
+        raise HTTPException(status_code=500, detail=f"Failed to notify via email due to a communication error.")

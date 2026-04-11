@@ -34,8 +34,9 @@ from controllers.auth_controller import router as auth_router
 from controllers.bike_controller import router as bike_router
 from controllers.sell_bike_controller import router as sell_bike_router
 from controllers.sell_listing_controller import router as sell_listing_router
-from controllers.user_data_controller import router as user_data_router
+from controllers.user_controller import router as user_router
 from controllers.lead_controller import router as lead_router
+from controllers.spare_part_controller import router as spare_part_router
 from utils.rate_limit import limiter
 
 
@@ -83,13 +84,17 @@ app.include_router(bike_router)
 app.include_router(sell_bike_router)
 # Simple sell listing: /sell-listings
 app.include_router(sell_listing_router)
-# User Data (admin)
-app.include_router(user_data_router)
+# User Data (admin & self)
+app.include_router(user_router)
 # Lead routes
 app.include_router(lead_router)
+# Spare Part routes
+app.include_router(spare_part_router)
 
-# Serve uploaded bike images at /static/bikes/... (ensure dir exists before mount)
+# Serve uploaded images (ensure dirs exist)
 Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
+(Path(settings.UPLOAD_DIR) / "bikes").mkdir(parents=True, exist_ok=True)
+(Path(settings.UPLOAD_DIR) / "spare_parts").mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory=settings.UPLOAD_DIR), name="static")
 
 

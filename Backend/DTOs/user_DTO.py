@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class UserResponseDTO(BaseModel):
@@ -6,7 +6,27 @@ class UserResponseDTO(BaseModel):
     name: str
     email: str
     phone: str
-    # add any other fields from your User model here
+    role: str
+    status: str
+    is_verified: bool
 
     class Config:
-        from_attributes = True  # orm_mode = True if Pydantic v1
+        from_attributes = True
+
+class UserUpdateDTO(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+
+class UserCreateDTO(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    phone: str
+    role: Optional[str] = "user"
+    status: Optional[str] = "active"
+
+class AdminUserUpdateDTO(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    role: Optional[str] = None
+    status: Optional[str] = None

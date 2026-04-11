@@ -17,6 +17,9 @@ class Bike(Base):
     ownership = Column(Integer, nullable=False)
     price = Column(Numeric(12, 2), nullable=False)
     insurance = Column(Boolean, nullable=False, default=False)
+    is_new = Column(Boolean, nullable=False, default=False)
+    description = Column(String, nullable=True)
+    is_ad = Column(Boolean, nullable=False, default=False)
     image_count = Column(Integer, nullable=False, default=0)
 
     created_at = Column(DateTime, default=datetime.utcnow)
