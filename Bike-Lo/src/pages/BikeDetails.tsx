@@ -96,8 +96,8 @@ export default function BikeDetails() {
     const payload = {
       email: userEmail,
       subject: `Booking Request: ${bikeTitle}`,
-      "UserHTML ": userHtml,
-      "AdminHTML ": adminHtml,
+      UserHTML: userHtml,
+      AdminHTML: adminHtml,
     };
 
     console.debug("[BookNow] Sending lead payload to /leads/capture:", payload);

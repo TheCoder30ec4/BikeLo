@@ -4,6 +4,8 @@ from tables.users import User
 
 
 class UserRepository:
+    MUTABLE_FIELDS = {"name", "phone", "role", "status", "password", "is_verified"}
+
     def __init__(self, db: Session):
         self.db = db
 
@@ -13,11 +15,13 @@ class UserRepository:
     def get_by_email(self, email: str) -> User | None:
         return self.db.query(User).filter(User.email == email).first()
 
-    def create_user(self, user_data: dict) -> User:
+    def create_user(self, user_data: dict, *, commit: bool = True) -> User:
         user = User(**user_data)
         self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        self.db.flush()
+        if commit:
+            self.db.commit()
+            self.db.refresh(user)
         return user
 
     def get_all(self) -> list[User]:
@@ -33,6 +37,9 @@ class UserRepository:
         return user
 
     def update(self, user: User, update_data: dict) -> User:
+        invalid_fields = set(update_data) - self.MUTABLE_FIELDS
+        if invalid_fields:
+            raise ValueError(f"Attempted to update unsupported user fields: {sorted(invalid_fields)}")
         for key, value in update_data.items():
             setattr(user, key, value)
         self.db.commit()

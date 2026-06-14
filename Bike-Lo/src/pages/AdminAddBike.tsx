@@ -31,7 +31,7 @@ export default function AdminAddBike() {
   const [isDragging, setIsDragging] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const MAX_FILES = 2;
+  const MAX_FILES = 6;
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);

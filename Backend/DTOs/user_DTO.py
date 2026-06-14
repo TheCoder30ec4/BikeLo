@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Literal, Optional
+
+from pydantic import BaseModel, EmailStr, Field
 
 class UserResponseDTO(BaseModel):
     id: int
@@ -20,13 +21,13 @@ class UserUpdateDTO(BaseModel):
 class UserCreateDTO(BaseModel):
     name: str
     email: EmailStr
-    password: str
+    password: str = Field(min_length=8, max_length=72)
     phone: str
-    role: Optional[str] = "user"
-    status: Optional[str] = "active"
+    role: Literal["user", "admin"] = "user"
+    status: Literal["active", "inactive"] = "active"
 
 class AdminUserUpdateDTO(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
-    role: Optional[str] = None
-    status: Optional[str] = None
+    role: Optional[Literal["user", "admin"]] = None
+    status: Optional[Literal["active", "inactive"]] = None

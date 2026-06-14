@@ -1,8 +1,6 @@
 from datetime import datetime
-from typing import List
 
-from pydantic import BaseModel, Field, field_validator
-from config import settings
+from pydantic import BaseModel, Field
 
 
 class BikeBase(BaseModel):
@@ -16,11 +14,6 @@ class BikeBase(BaseModel):
     is_new: bool = False
     description: str | None = None
     is_ad: bool = False
-
-
-class CreateBikeRequest(BikeBase):
-    image_urls: List[str] = Field(default_factory=list, description="URLs of uploaded bike images")
-
 
 class UpdateBikeRequest(BaseModel):
     """Partial update; only provided fields are updated."""
@@ -65,4 +58,3 @@ class BikeResponse(BaseModel):
 
     class Config:
         from_attributes = True
-

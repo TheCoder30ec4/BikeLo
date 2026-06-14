@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
-from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 from DataBase.core import get_db
 from DTOs.bike_DTO import BikeResponse, UpdateBikeRequest
-from dependencies.auth import CurrentUser
+from dependencies.auth import CurrentUser, RequireAdmin
 from services.bike_service import BikeService
 
 router = APIRouter(prefix="/bikes", tags=["bikes"])
@@ -28,7 +27,7 @@ def list_bikes(
 
 @router.post("/", response_model=BikeResponse)
 async def create_bike_with_images(
-    _: CurrentUser,
+    _: RequireAdmin,
     db: Session = Depends(get_db),
     make: str = Form(""),
     model_name: str = Form(...),
@@ -92,7 +91,7 @@ async def create_bike_with_images(
 def update_bike(
     bike_id: int,
     data: UpdateBikeRequest,
-    _: CurrentUser,
+    _: RequireAdmin,
     db: Session = Depends(get_db),
 ) -> BikeResponse:
     """Update bike details (partial; only sent fields are updated). Accessible by users and admins."""
@@ -103,10 +102,9 @@ def update_bike(
 @router.delete("/{bike_id}", status_code=204)
 def delete_bike(
     bike_id: int,
-    _: CurrentUser,
+    _: RequireAdmin,
     db: Session = Depends(get_db),
 ) -> None:
     """Delete a bike and its uploaded images. Accessible by users and admins."""
     service = BikeService(db)
     service.delete_bike(bike_id)
-

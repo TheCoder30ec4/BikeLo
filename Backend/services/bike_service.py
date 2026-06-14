@@ -1,9 +1,9 @@
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from DTOs.bike_DTO import BikeResponse, CreateBikeRequest, UpdateBikeRequest
+from DTOs.bike_DTO import BikeResponse, UpdateBikeRequest
 from repositories.bike_repository import BikeRepository
-from utils.upload import delete_bike_upload_folder, save_bike_images
+from utils.upload import delete_bike_upload_folder, save_bike_images, validate_image_uploads
 
 
 class BikeService:
@@ -11,29 +11,35 @@ class BikeService:
         self.db = db
         self.repo = BikeRepository(db)
 
-    def create_bike(self, data: CreateBikeRequest) -> BikeResponse:
-        bike_data = {
-            "make": data.make,
-            "model_name": data.model_name,
-            "year": data.year,
-            "km_driven": data.km_driven,
-            "ownership": data.ownership,
-            "price": data.price,
-            "insurance": data.insurance,
-        }
-        bike = self.repo.create_bike(bike_data, data.image_urls)
-        return BikeResponse.model_validate(bike)
-
     async def create_bike_with_uploads(
         self,
         bike_data: dict,
         files: list[UploadFile],
     ) -> BikeResponse:
-        bike = self.repo.create_bike(bike_data, [])
-        urls = await save_bike_images(files, bike.id)
-        if urls:
-            bike = self.repo.add_images(bike.id, urls)
-        return BikeResponse.model_validate(bike)
+        validated_files = await validate_image_uploads(
+            files,
+            max_files=6,
+            exact_files=1 if bike_data.get("is_ad") else None,
+        )
+        bike = None
+        try:
+            bike = self.repo.create_bike(bike_data, [], commit=False)
+            urls = await save_bike_images(validated_files, bike.id)
+            if urls:
+                bike = self.repo.add_images(bike.id, urls, commit=False)
+            self.db.commit()
+            self.db.refresh(bike)
+            return BikeResponse.model_validate(bike)
+        except HTTPException:
+            self.db.rollback()
+            if bike is not None:
+                delete_bike_upload_folder(bike.id)
+            raise
+        except Exception:
+            self.db.rollback()
+            if bike is not None:
+                delete_bike_upload_folder(bike.id)
+            raise
 
     def update_bike(self, bike_id: int, data: UpdateBikeRequest) -> BikeResponse:
         bike = self.repo.get_by_id(bike_id)
@@ -55,4 +61,3 @@ class BikeService:
     def list_bikes(self) -> list[BikeResponse]:
         bikes = self.repo.list_bikes()
         return [BikeResponse.model_validate(b) for b in bikes]
-

@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
@@ -6,19 +7,36 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
+from config import settings
+
 load_dotenv()
 
-# Fetch env vars for direct psycopg2 and for building DATABASE_URL
-USER = os.getenv("user")
-PASSWORD = os.getenv("password")
-HOST = os.getenv("host")
-PORT = os.getenv("port")
-DBNAME = os.getenv("dbname")
 
-# Use DATABASE_URL if set, otherwise build from components
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL and all((USER, PASSWORD, HOST, PORT, DBNAME)):
-    DATABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}"
+def _first_env(*names: str) -> str:
+    for name in names:
+        value = os.getenv(name)
+        if value:
+            return value
+    return ""
+
+
+def _build_database_url() -> str:
+    if settings.DATABASE_URL:
+        return settings.DATABASE_URL
+
+    user = _first_env("DB_USER", "POSTGRES_USER", "user")
+    password = _first_env("DB_PASSWORD", "POSTGRES_PASSWORD", "password")
+    host = _first_env("DB_HOST", "POSTGRES_HOST", "host")
+    port = _first_env("DB_PORT", "POSTGRES_PORT", "port")
+    dbname = _first_env("DB_NAME", "POSTGRES_DB", "dbname")
+
+    if all((user, password, host, port, dbname)):
+        return f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
+
+    raise RuntimeError("DATABASE_URL or standard database env vars must be set")
+
+
+DATABASE_URL = _build_database_url()
 
 engine = create_engine(
     DATABASE_URL,
@@ -57,17 +75,9 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 def get_psycopg2_connection():
     """Return a raw psycopg2 connection. Caller must close it."""
-    if all((USER, PASSWORD, HOST, PORT, DBNAME)):
-        return psycopg2.connect(
-            user=USER,
-            password=PASSWORD,
-            host=HOST,
-            port=PORT,
-            dbname=DBNAME,
-        )
     if DATABASE_URL:
         return psycopg2.connect(DATABASE_URL)
-    raise ValueError("Set DATABASE_URL or (user, password, host, port, dbname) in .env")
+    raise ValueError("DATABASE_URL or standard database env vars must be set")
 
 
 def test_connection():

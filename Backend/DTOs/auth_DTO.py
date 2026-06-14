@@ -9,8 +9,6 @@ class SignupRequest(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=72)
     phone: str
-    role: str = Field(default="user", description="user | admin")
-    status: str = Field(default="active", description="active | inactive")
 
 
 class LoginRequest(BaseModel):

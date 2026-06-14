@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from DTOs.sell_bike_DTO import SellBikeResponse
 from repositories.sell_bike_repository import SellBikeRepository
-from utils.upload import save_sell_bike_document
+from utils.upload import (
+    delete_sell_bike_upload_folder,
+    save_sell_bike_document,
+    validate_document_upload,
+)
 
 
 class SellBikeService:
@@ -40,6 +44,11 @@ class SellBikeService:
             if not invoice or not invoice.filename:
                 raise HTTPException(422, detail="Invoice upload is required for new vehicles")
 
+        if invoice and invoice.filename:
+            await validate_document_upload(invoice, label="invoice")
+        if rc_card and rc_card.filename:
+            await validate_document_upload(rc_card, label="rc_card")
+
         data = {
             "user_id": user_id,
             "vehicle_type": vehicle_type,
@@ -51,12 +60,28 @@ class SellBikeService:
             "invoice_url": None,
             "rc_card_url": None,
         }
-        row = self.repo.create(data)
+        row = None
+        try:
+            row = self.repo.create(data, commit=False)
 
-        invoice_url = await save_sell_bike_document(invoice, row.id, "invoice_")
-        rc_card_url = await save_sell_bike_document(rc_card, row.id, "rc_")
-        if invoice_url or rc_card_url:
-            self.repo.update_document_urls(row.id, invoice_url=invoice_url, rc_card_url=rc_card_url)
-            row = self.repo.get_by_id(row.id)
-
-        return SellBikeResponse.model_validate(row)
+            invoice_url = await save_sell_bike_document(invoice, row.id, "invoice_")
+            rc_card_url = await save_sell_bike_document(rc_card, row.id, "rc_")
+            self.repo.update_document_urls(
+                row.id,
+                invoice_url=invoice_url,
+                rc_card_url=rc_card_url,
+                commit=False,
+            )
+            self.db.commit()
+            self.db.refresh(row)
+            return SellBikeResponse.model_validate(row)
+        except HTTPException:
+            self.db.rollback()
+            if row is not None:
+                delete_sell_bike_upload_folder(row.id)
+            raise
+        except Exception:
+            self.db.rollback()
+            if row is not None:
+                delete_sell_bike_upload_folder(row.id)
+            raise

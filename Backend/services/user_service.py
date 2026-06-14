@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
-from tables.users import User
-from repositories.user_repository import UserRepository
 from DTOs.user_DTO import UserCreateDTO, UserUpdateDTO, AdminUserUpdateDTO
+from repositories.refresh_token_repository import RefreshTokenRepository
+from repositories.user_repository import UserRepository
+from tables.users import User
 from utils.security import hash_password
 
 
@@ -11,6 +12,7 @@ class UserService:
     def __init__(self, db: Session):
         self.db = db
         self.user_repo = UserRepository(db)
+        self.refresh_repo = RefreshTokenRepository(db)
 
     def get_all_users(self) -> list[User]:
         return self.user_repo.get_all()
@@ -44,7 +46,10 @@ class UserService:
     def admin_update_user(self, user_id: int, data: AdminUserUpdateDTO) -> User:
         user = self.get_user_by_id(user_id)
         update_data = data.model_dump(exclude_unset=True)
-        return self.user_repo.update(user, update_data)
+        updated_user = self.user_repo.update(user, update_data)
+        if update_data.get("status") == "inactive":
+            self.refresh_repo.revoke_all_for_user(user_id)
+        return updated_user
 
     def admin_delete_user(self, user_id: int) -> dict:
         user = self.get_user_by_id(user_id)

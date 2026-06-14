@@ -7,11 +7,13 @@ class SellBikeRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, data: dict) -> SellBike:
+    def create(self, data: dict, *, commit: bool = True) -> SellBike:
         row = SellBike(**data)
         self.db.add(row)
-        self.db.commit()
-        self.db.refresh(row)
+        self.db.flush()
+        if commit:
+            self.db.commit()
+            self.db.refresh(row)
         return row
 
     def get_by_id(self, sell_bike_id: int) -> SellBike | None:
@@ -23,6 +25,7 @@ class SellBikeRepository:
         *,
         invoice_url: str | None = None,
         rc_card_url: str | None = None,
+        commit: bool = True,
     ) -> SellBike | None:
         row = self.get_by_id(sell_bike_id)
         if not row:
@@ -31,6 +34,7 @@ class SellBikeRepository:
             row.invoice_url = invoice_url
         if rc_card_url is not None:
             row.rc_card_url = rc_card_url
-        self.db.commit()
-        self.db.refresh(row)
+        if commit:
+            self.db.commit()
+            self.db.refresh(row)
         return row

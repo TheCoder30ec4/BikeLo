@@ -4,22 +4,16 @@ from pathlib import Path
 
 
 def _configure_logging() -> None:
-    """Force DEBUG on the root logger and the lead controller.
-    Must be called AFTER uvicorn/gunicorn set up their handlers,
-    otherwise basicConfig is a no-op."""
+    """Configure application logging after the server initialises handlers."""
     fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-    # Add a console handler only if there isn't one already
+    log_level = getattr(logging, settings.LOG_LEVEL, logging.INFO)
+    root.setLevel(log_level)
     if not root.handlers:
         handler = logging.StreamHandler()
         handler.setFormatter(logging.Formatter(fmt))
         root.addHandler(handler)
-    # Specifically set the lead_controller logger to DEBUG
-    logging.getLogger("controllers.lead_controller").setLevel(logging.DEBUG)
 
-
-_configure_logging()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,8 +22,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-from config import settings
-from seed_admin import seed_admin
+from config import settings, validate_runtime_settings
 from controllers.auth_controller import router as auth_router
 from controllers.bike_controller import router as bike_router
 from controllers.sell_bike_controller import router as sell_bike_router
@@ -37,15 +30,21 @@ from controllers.sell_listing_controller import router as sell_listing_router
 from controllers.user_controller import router as user_router
 from controllers.lead_controller import router as lead_router
 from controllers.spare_part_controller import router as spare_part_router
+from DataBase.core import init_db
 from utils.rate_limit import limiter
+
+_configure_logging()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Re-apply log level after uvicorn has initialised its own handlers
     _configure_logging()
-    
+    validate_runtime_settings()
+    init_db()
     Path(settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
+    (Path(settings.UPLOAD_DIR) / "bikes").mkdir(parents=True, exist_ok=True)
+    (Path(settings.UPLOAD_DIR) / "spare_parts").mkdir(parents=True, exist_ok=True)
+    (Path(settings.UPLOAD_DIR) / "sell_bikes").mkdir(parents=True, exist_ok=True)
     yield
 
 
@@ -59,8 +58,8 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://www.bike-lo.com",
         "https://bike-lo-izsi.vercel.app",
-        "http://localhost:5173/"
     ],
+    allow_origin_regex=r"https://bike-lo-izsi.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -100,11 +99,11 @@ def root():
 
 def main():
     import uvicorn
+
     import os
-    from config import settings
-    # if DEPLOYMENT is False, use reload, otherwise no
+
     is_development = os.getenv("DEPLOYMENT", "False").lower() not in ("true", "1", "yes")
-    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=is_development)
+    uvicorn.run("main:app", host="0.0.0.0", port=settings.APP_PORT, reload=is_development)
 
 
 if __name__ == "__main__":

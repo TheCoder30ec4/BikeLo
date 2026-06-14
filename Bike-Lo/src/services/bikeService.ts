@@ -76,8 +76,8 @@ export async function updateBike(bikeId: number, data: UpdateBikeRequest): Promi
 export interface LeadCapturePayload {
   email: string;
   subject: string;
-  "UserHTML ": string;
-  "AdminHTML ": string;
+  UserHTML: string;
+  AdminHTML: string;
 }
 
 export async function bookBikeLeadApi(payload: LeadCapturePayload): Promise<{ message: string }> {

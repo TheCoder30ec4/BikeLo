@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from sqlalchemy.orm import Session
 from DataBase.core import get_db
-from DTOs.spare_part_DTO import SparePartResponse, UpdateSparePartRequest
+from DTOs.spare_part_DTO import SparePartResponse
 from dependencies.auth import CurrentUser, RequireAdmin
 from services.spare_part_service import SparePartService
 
